@@ -25,10 +25,10 @@ GoCD.script {
     pipeline('code-sign') {
       group = 'go-cd'
       materials() {
-        git {
+        git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
         }
-        dependency {
+        dependency('installers') {
           pipeline = 'installers'
           stage = 'dist'
         }
@@ -45,6 +45,7 @@ GoCD.script {
                     stage = 'dist'
                     job = 'dist'
                     source = "dist/${osType}"
+                    destination = '.'
                   }
                   exec { commandLine = ["rake", "--trace", "${osType}:sign"] }
                 }
