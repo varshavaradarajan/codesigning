@@ -63,7 +63,7 @@ GoCD.script {
                     workingDir = 'signing-keys'
                   }
                   exec {
-                    commandLine = ["ls", "-alr"]
+                    commandLine = ["ls", "-alR"]
                   }
                   exec {
                     commandLine = ["rake", "--trace", "${osType}:sign"]
