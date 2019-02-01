@@ -3,7 +3,7 @@
 # `echo "go ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/go`
 namespace :deb do
   signing_dir = "out/deb"
-  deb_source_dir = 'deb'
+  deb_source_dir = 'src/deb'
   gpg_signing_id = '0xD8843F288816C449'
 
   desc "sign deb binaries"

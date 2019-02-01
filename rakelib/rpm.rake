@@ -1,6 +1,6 @@
 namespace :rpm do
   signing_dir = "out/rpm"
-  rpm_source_dir = 'rpm'
+  rpm_source_dir = 'src/rpm'
   gpg_signing_id = '0xD8843F288816C449'
 
   desc "sign rpm binaries"
