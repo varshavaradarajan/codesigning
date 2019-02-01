@@ -8,8 +8,8 @@ namespace :deb do
 
   desc "sign deb binaries"
   task :sign => ['gpg:setup'] do
-    if Dir["#{rpm_source_dir}/*.rpm"].empty?
-      raise "Unable to find any binaries in #{rpm_source_dir}"
+    if Dir["#{deb_source_dir}/*.rpm"].empty?
+      raise "Unable to find any binaries in #{deb_source_dir}"
     end
 
     rm_rf signing_dir
