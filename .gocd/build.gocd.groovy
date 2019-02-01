@@ -14,6 +14,31 @@
  * limitations under the License.
  */
 
+def fetchArtifactTask = {String osType ->
+  return new FetchArtifactTask(false, {
+                    pipeline = 'installers'
+                    stage = 'dist'
+                    job = 'dist'
+                    source = "dist/${osType}"
+                    destination = "codesigning/src"
+  })
+}
+
+def signArtifactTask = {String osType ->
+  return new ExecTask({
+                    commandLine = ["rake", "--trace", "${osType}:sign"]
+                    workingDir = 'codesigning'
+  })
+}
+
+def publishArtifactTask = { String osType ->
+  return new BuildArtifact('build', {
+
+                    source = "codesigning/out/${osType}"
+                    destination = "dist"
+  })
+}
+
 GoCD.script {
   environments {
     environment('gocd') {
@@ -43,41 +68,39 @@ GoCD.script {
 
       stages {
         stage('sign') {
+          secureEnvironmentVariables = [
+            GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ='
+          ]
           jobs {
-            ['rpm', 'deb'].collect { osType ->
-              job(osType) {
-                secureEnvironmentVariables = [
-                  GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ='
-                ]
-                elasticProfileId = 'ecs-gocd-dev-build'
-                tasks {
-                  fetchDirectory {
-                    pipeline = 'installers'
-                    stage = 'dist'
-                    job = 'dist'
-                    source = "dist/${osType}"
-                    destination = "codesigning/src"
-                  }
-                  bash {
-                    commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
-                    workingDir = 'signing-keys'
-                  }
-                  exec {
-                    commandLine = ["ls", "-alR"]
-                  }
-                  exec {
-                    commandLine = ["rake", "--trace", "${osType}:sign"]
-                    workingDir = 'codesigning'
-                  }
+            job('rpm') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                add(fetchArtifactTask('rpm'))
+                bash {
+                  commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
+                  workingDir = 'signing-keys'
                 }
-                artifacts {
-                  build {
-                    source = "codesigning/out/${osType}"
-                    destination = "dist"
-                  }
-                }
+                add(signArtifactTask('rpm'))
+              }
+              artifacts {
+                add(publishArtifactTask('rpm'))
               }
             }
+            job('deb') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                add(fetchArtifactTask('deb'))
+                bash {
+                  commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
+                  workingDir = 'signing-keys'
+                }
+                add(signArtifactTask('deb'))
+              }
+              artifacts {
+                add(publishArtifactTask('deb'))
+              }
+            }
+
           }
         }
       }
