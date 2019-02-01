@@ -56,20 +56,22 @@ GoCD.script {
                     stage = 'dist'
                     job = 'dist'
                     source = "dist/${osType}"
-                    destination = '.'
+                    destination = "codesigning/${osType}"
                   }
                   bash {
                     commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
                     workingDir = 'signing-keys'
                   }
                   exec {
-                    commandLine = ["ls", "-alR"]
-                  }
-                  exec {
                     commandLine = ["rake", "--trace", "${osType}:sign"]
                     workingDir = 'codesigning'
                   }
-
+                }
+                artifacts {
+                  build {
+                    source = "codesigning/out/${osType}"
+                    destination = "dist"
+                  }
                 }
               }
             }
