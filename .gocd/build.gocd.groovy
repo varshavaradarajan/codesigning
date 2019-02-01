@@ -29,7 +29,7 @@ GoCD.script {
           url = 'https://github.com/ketan/codesigning'
           destination = "codesigning"
         }
-        svn {
+        svn('signing-keys') {
           url = "https://github.com/gocd-private/signing-keys"
           username = "AES:5C42VNngdmnKHOBbSAPqjQ==:MOtWqq9QOM7zoweISKzBGg=="
           encryptedPassword = "AES:taOvOCaXsoVwzIi+xIGLdA==:GSfhZ6KKt6MXKp/wdYYoyBQKKzbTiyDa+35kDgkEIOF75s9lzerGInbqbUM7nUKc"
