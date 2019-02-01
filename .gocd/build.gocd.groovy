@@ -30,7 +30,7 @@ GoCD.script {
           destination = "codesigning"
         }
         svn('signing-keys') {
-          url = "https://github.com/gocd-private/signing-keys"
+          url = "https://github.com/gocd-private/signing-keys/trunk"
           username = "gocd-ci-user"
           encryptedPassword = "AES:taOvOCaXsoVwzIi+xIGLdA==:GSfhZ6KKt6MXKp/wdYYoyBQKKzbTiyDa+35kDgkEIOF75s9lzerGInbqbUM7nUKc"
           destination = "signing-keys"
