@@ -66,6 +66,9 @@ GoCD.script {
                     commandLine = ["rake", "--trace", "${osType}:sign"]
                     workingDir = 'codesigning'
                   }
+                  exec {
+                    commandLine = ["ls", "-alr"]
+                  }
                 }
               }
             }
