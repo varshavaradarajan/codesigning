@@ -5,6 +5,10 @@ namespace :rpm do
 
   desc "sign rpm binaries"
   task :sign => ['gpg:setup'] do
+    if Dir["#{rpm_source_dir}/*.rpm"].empty?
+      raise "Unable to find any binaries in #{rpm_source_dir}"
+    end
+
     rm_rf signing_dir
     mkdir_p signing_dir
     Dir["#{rpm_source_dir}/*.rpm"].each do |f|
