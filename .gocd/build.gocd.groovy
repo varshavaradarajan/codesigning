@@ -46,6 +46,9 @@ GoCD.script {
           jobs {
             ['rpm', 'deb'].collect { osType ->
               job(osType) {
+                secureEnvironmentVariables = [
+                  GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ='
+                ]
                 elasticProfileId = 'ecs-gocd-dev-build'
                 tasks {
                   fetchDirectory {
@@ -54,6 +57,10 @@ GoCD.script {
                     job = 'dist'
                     source = "dist/${osType}"
                     destination = '.'
+                  }
+                  bash {
+                    commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
+                    workingDir = 'signing-keys'
                   }
                   exec {
                     commandLine = ["rake", "--trace", "${osType}:sign"]
