@@ -104,10 +104,10 @@ GoCD.script {
               elasticProfileId = 'window-dev-build'
               tasks {
                 add(fetchArtifactTask('win'))
-                execTask {
+                exec {
                   commandLine = ['choco', 'install', 'gpg4win']
                 }
-                execTask {
+                exec {
                   commandLine = ['echo ${GOCD_GPG_PASSPHRASE} > gpg-passphrase']
                   workingDir = 'signing-keys'
                 }
