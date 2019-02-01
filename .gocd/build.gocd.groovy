@@ -100,7 +100,24 @@ GoCD.script {
                 add(publishArtifactTask('deb'))
               }
             }
+            job('win') {
+              elasticProfileId = 'window-dev-build'
+              tasks {
+                add(fetchArtifactTask('win'))
+                execTask {
+                  commandLine = ['choco', 'install', 'gpg4win']
+                }
+                execTask {
+                  commandLine = ['echo ${GOCD_GPG_PASSPHRASE} > gpg-passphrase']
+                  workingDir = 'signing-keys'
+                }
+                add(signArtifactTask('win'))
+              }
 
+              // artifacts {
+              //   add(publishArtifactTask('win'))
+              // }
+            }
           }
         }
       }
