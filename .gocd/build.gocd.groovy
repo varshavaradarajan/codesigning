@@ -39,6 +39,7 @@ GoCD.script {
           jobs {
             ['rpm', 'deb'].collect { osType ->
               job(osType) {
+                elasticProfileId = ['ecs-gocd-dev-build']
                 tasks {
                   fetchDirectory {
                     pipeline = 'installers'
