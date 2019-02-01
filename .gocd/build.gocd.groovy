@@ -105,7 +105,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('win'))
                 exec {
-                  commandLine = ['choco', 'install', 'gpg4win', '--yes', '--no-progress']
+                  commandLine = ['choco', 'install', 'gpg4win', '--yes']
                 }
                 exec {
                   commandLine = ['echo ${GOCD_GPG_PASSPHRASE} > gpg-passphrase']
