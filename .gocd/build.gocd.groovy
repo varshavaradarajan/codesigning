@@ -27,11 +27,13 @@ GoCD.script {
       materials() {
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
+          destination = "codesigning"
         }
         svn {
           url = "https://github.com/gocd-private/signing-keys"
           username = "AES:5C42VNngdmnKHOBbSAPqjQ==:MOtWqq9QOM7zoweISKzBGg=="
           encryptedPassword = "AES:taOvOCaXsoVwzIi+xIGLdA==:GSfhZ6KKt6MXKp/wdYYoyBQKKzbTiyDa+35kDgkEIOF75s9lzerGInbqbUM7nUKc"
+          destination = "signing-keys"
         }
         dependency('installers') {
           pipeline = 'installers'
@@ -53,7 +55,10 @@ GoCD.script {
                     source = "dist/${osType}"
                     destination = '.'
                   }
-                  exec { commandLine = ["rake", "--trace", "${osType}:sign"] }
+                  exec {
+                    commandLine = ["rake", "--trace", "${osType}:sign"]
+                    workingDir = 'codesigning'
+                  }
                 }
               }
             }
