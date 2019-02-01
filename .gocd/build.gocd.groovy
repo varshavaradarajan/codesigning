@@ -56,7 +56,7 @@ GoCD.script {
                     stage = 'dist'
                     job = 'dist'
                     source = "dist/${osType}"
-                    destination = "codesigning/${osType}"
+                    destination = "codesigning/src"
                   }
                   bash {
                     commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
