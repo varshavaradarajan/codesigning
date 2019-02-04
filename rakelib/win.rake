@@ -31,13 +31,11 @@ namespace :win do
 
     cd signing_dir do
       Dir["#{signing_dir}/*.exe"].each do |f|
-        sh("dpkg-sig --verbose --sign builder -k '#{gpg_signing_id}' '#{f}'")
-      end
-      sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{gpg_signing_id}")
-      sh("sudo apt-key add GPG-KEY-GOCD-#{Process.pid}")
-      rm "GPG-KEY-GOCD-#{Process.pid}"
-      Dir["#{signing_dir}/*.win"].each do |f|
-        sh("dpkg-sig --verbose --verify '#{f}'")
+        sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /t http://timestamp.digicert.com /a '#{f}'")
+        sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /tr http://timestamp.digicert.com /a /fd sha256 /td sha256 /as '#{f}'")
+
+        sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha1 '#{f}'")
+        sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha256 '#{f}'")
       end
     end
   end
