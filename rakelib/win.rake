@@ -28,14 +28,12 @@ namespace :win do
       cp f, "#{signing_dir}"
     end
 
-    cd signing_dir do
-      Dir["#{signing_dir}/*.exe"].each do |f|
-        sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /t http://timestamp.digicert.com /a '#{f}'")
-        sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /tr http://timestamp.digicert.com /a /fd sha256 /td sha256 /as '#{f}'")
+    Dir["#{signing_dir}/*.exe"].each do |f|
+      sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /t http://timestamp.digicert.com /a '#{f}'")
+      sh("signtool sign /debug /f ../signing-keys/windows-code-sign.p12 /v /tr http://timestamp.digicert.com /a /fd sha256 /td sha256 /as '#{f}'")
 
-        sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha1 '#{f}'")
-        sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha256 '#{f}'")
-      end
+      sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha1 '#{f}'")
+      sh("signtool verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha256 '#{f}'")
     end
   end
 end
