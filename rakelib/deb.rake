@@ -18,12 +18,16 @@ namespace :deb do
       cp f, "#{signing_dir}"
     end
 
-    Dir["#{signing_dir}/*.deb"].each do |f|
-      sh("dpkg-sig --verbose --sign builder -k '#{gpg_signing_id}' '#{f}'")
+    cd signing_dir do
+      Dir["*.deb"].each do |f|
+        sh("dpkg-sig --verbose --sign builder -k '#{gpg_signing_id}' '#{f}'")
+      end
     end
+
     sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{gpg_signing_id}")
     sh("sudo apt-key add GPG-KEY-GOCD-#{Process.pid}")
     rm "GPG-KEY-GOCD-#{Process.pid}"
+
     Dir["#{signing_dir}/*.deb"].each do |f|
       sh("dpkg-sig --verbose --verify '#{f}'")
     end

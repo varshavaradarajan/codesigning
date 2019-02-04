@@ -15,10 +15,13 @@ namespace :rpm do
       cp f, "#{signing_dir}"
     end
 
-    Dir["#{signing_dir}/*.rpm"].each do |f|
-      # wrap with `setsid ... </dev/null` to avoid attaching to TTY. This otherwise causes a password prompt
-      sh(%Q{setsid sh -c "rpm --addsign --define '_gpg_name #{gpg_signing_id}' '#{f}' < /dev/null"})
+    cd signing_dir do
+      Dir["*.rpm"].each do |f|
+        # wrap with `setsid ... </dev/null` to avoid attaching to TTY. This otherwise causes a password prompt
+        sh(%Q{setsid sh -c "rpm --addsign --define '_gpg_name #{gpg_signing_id}' '#{f}' < /dev/null"})
+      end
     end
+
     sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{gpg_signing_id}")
     sh("sudo rpm --import GPG-KEY-GOCD-#{Process.pid}")
     rm "GPG-KEY-GOCD-#{Process.pid}"
@@ -26,6 +29,5 @@ namespace :rpm do
     Dir["#{signing_dir}/*.rpm"].each do |f|
       sh("rpm --checksig '#{f}'")
     end
-
   end
 end

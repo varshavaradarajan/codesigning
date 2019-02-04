@@ -92,6 +92,16 @@ GoCD.script {
                 add(publishArtifactTask('deb'))
               }
             }
+            job('zip') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                add(fetchArtifactTask('zip'))
+                add(signArtifactTask('zip'))
+              }
+              artifacts {
+                add(publishArtifactTask('zip'))
+              }
+            }
             job('win') {
               elasticProfileId = 'window-dev-build'
               tasks {
