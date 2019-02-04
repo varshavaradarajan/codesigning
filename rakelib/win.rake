@@ -16,7 +16,7 @@ namespace :win do
     end
 
     sh("choco install windows-sdk-8.0 --yes --no-progress") do |ok, res|
-      puts File.read('c:\tmp\chocolatey\windows-sdk-8.0.log', 'r')
+      puts File.read('c:\tmp\chocolatey\windows-sdk-8.0.log')
     end
   end
 
