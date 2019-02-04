@@ -13,7 +13,6 @@ namespace :win do
     cd '../signing-keys' do
       open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
       sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output windows-code-sign.p12 windows-code-sign.p12.gpg")
-      sh("certutil.exe -addstore Root windows-code-sign.p12")
     end
   end
 
