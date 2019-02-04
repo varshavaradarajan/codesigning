@@ -76,10 +76,6 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 add(fetchArtifactTask('rpm'))
-                bash {
-                  commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
-                  workingDir = 'signing-keys'
-                }
                 add(signArtifactTask('rpm'))
               }
               artifacts {
@@ -90,10 +86,6 @@ GoCD.script {
               elasticProfileId = 'ubuntu-16.04-with-sudo'
               tasks {
                 add(fetchArtifactTask('deb'))
-                bash {
-                  commandString = 'echo "${GOCD_GPG_PASSPHRASE}" > gpg-passphrase'
-                  workingDir = 'signing-keys'
-                }
                 add(signArtifactTask('deb'))
               }
               artifacts {
@@ -104,10 +96,6 @@ GoCD.script {
               elasticProfileId = 'window-dev-build'
               tasks {
                 add(fetchArtifactTask('win'))
-                exec {
-                  commandLine = ['echo %GOCD_GPG_PASSPHRASE% > gpg-passphrase']
-                  workingDir = 'signing-keys'
-                }
                 add(signArtifactTask('win'))
               }
 
