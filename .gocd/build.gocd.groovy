@@ -105,7 +105,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('win'))
                 exec {
-                  commandLine = ['echo ${GOCD_GPG_PASSPHRASE} > gpg-passphrase']
+                  commandLine = ['echo %GOCD_GPG_PASSPHRASE% > gpg-passphrase']
                   workingDir = 'signing-keys'
                 }
                 add(signArtifactTask('win'))
