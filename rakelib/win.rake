@@ -5,8 +5,16 @@ namespace :win do
   win_source_dir = 'src/win'
   gpg_signing_id = '0xD8843F288816C449'
 
+  desc "setup code signing keys"
+  task :setup do
+    cd '../signing-keys' do
+      sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output windows-code-sign.p12 windows-code-sign.p12.gpg")
+      sh("certutil.exe -addstore Root windows-code-sign.p12")
+    end
+  end
+
   desc "sign win binaries"
-  task :sign => ['gpg:setup'] do
+  task :sign => ['setup'] do
     if Dir["#{win_source_dir}/*.exe"].empty?
       raise "Unable to find any binaries in #{win_source_dir}"
     end

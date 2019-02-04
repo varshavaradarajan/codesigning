@@ -105,18 +105,15 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('win'))
                 exec {
-                  commandLine = ['choco', 'install', 'gpg4win', '--yes']
-                }
-                exec {
                   commandLine = ['echo ${GOCD_GPG_PASSPHRASE} > gpg-passphrase']
                   workingDir = 'signing-keys'
                 }
                 add(signArtifactTask('win'))
               }
 
-              // artifacts {
-              //   add(publishArtifactTask('win'))
-              // }
+              artifacts {
+                add(publishArtifactTask('win'))
+              }
             }
           }
         }
