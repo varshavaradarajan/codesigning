@@ -15,9 +15,7 @@ namespace :win do
       sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output windows-code-sign.p12 windows-code-sign.p12.gpg")
     end
 
-    sh("choco install windows-sdk-8.0 --yes --no-progress") do |ok, res|
-      puts File.read('c:\tmp\chocolatey\windows-sdk-8.0.log')
-    end
+    sh("choco install windows-sdk-8.1 --yes --no-progress")
   end
 
   desc "sign win binaries"
