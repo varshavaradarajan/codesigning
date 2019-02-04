@@ -36,8 +36,8 @@ namespace :win do
       sh(%Q{"#{sign_tool}" sign /debug /f ../signing-keys/windows-code-sign.p12 /v /t http://timestamp.digicert.com /a "#{f}"})
       sh(%Q{"#{sign_tool}" sign /debug /f ../signing-keys/windows-code-sign.p12 /v /tr http://timestamp.digicert.com /a /fd sha256 /td sha256 /as "#{f}"})
 
-      sh(%Q{"#{sign_tool}" verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha1 "#{f}"})
-      sh(%Q{"#{sign_tool}" verify /debug /f ../signing-keys/windows-code-sign.p12 /v /a /pa /hash sha256 "#{f}"})
+      sh(%Q{"#{sign_tool}" verify /debug /v /a /pa /hash sha1 "#{f}"})
+      sh(%Q{"#{sign_tool}" verify /debug /v /a /pa /hash sha256 "#{f}"})
     end
   end
 end
