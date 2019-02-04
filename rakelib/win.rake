@@ -1,5 +1,5 @@
 # make sure deps are installed using
-# `choco install gpg4win`
+# `choco install gpg4win windows-sdk-8.0`
 namespace :win do
   signing_dir = "out/win"
   win_source_dir = 'src/win'
@@ -14,6 +14,8 @@ namespace :win do
       open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
       sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output windows-code-sign.p12 windows-code-sign.p12.gpg")
     end
+
+    sh("choco install windows-sdk-8.0 --yes --no-progress")
   end
 
   desc "sign win binaries"
