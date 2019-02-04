@@ -66,7 +66,7 @@ GoCD.script {
         }
       }
 
-      stages {
+      stages { stages ->
         stage('sign') {
           secureEnvironmentVariables = [
             GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ='
@@ -111,6 +111,28 @@ GoCD.script {
 
               artifacts {
                 add(publishArtifactTask('win'))
+              }
+            }
+          }
+        }
+
+        stage('metadata') {
+          jobs {
+            job('generate') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks { tasks ->
+                stages.first().jobs.getNames().each { jobName ->
+                  tasks.fetchArtifact {
+                    stage = stages.first()
+                    job = jobName
+                    source = "dist"
+                    destination = "codesigning/src"
+                  }
+                }
+
+                exec {
+                  commandLine = ['ls', '-alR']
+                }
               }
             }
           }
