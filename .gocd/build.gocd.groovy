@@ -142,12 +142,12 @@ GoCD.script {
                   }
                 }
 
-                tasks.fetchArtifact {
-                    pipeline = 'installers'
-                    stage = 'dist'
-                    job = 'dist'
-                    source = "dist/meta/version.json"
-                    destination = "codesigning/src/meta/version.json"
+                tasks.fetchFile {
+                  pipeline = 'installers'
+                  stage = 'dist'
+                  job = 'dist'
+                  source = "dist/meta/version.json"
+                  destination = "codesigning/src/meta/version.json"
                 }
 
                 exec {
