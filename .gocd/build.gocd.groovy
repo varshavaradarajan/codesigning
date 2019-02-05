@@ -147,7 +147,7 @@ GoCD.script {
                     stage = 'dist'
                     job = 'dist'
                     source = "dist/meta"
-                    destination = "codesigning/src/dist"
+                    destination = "codesigning/src"
                 }
 
                 exec {
