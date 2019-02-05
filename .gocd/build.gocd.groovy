@@ -47,7 +47,7 @@ GoCD.script {
   }
 
   pipelines {
-    pipeline('code-sign') {
+    pipeline('code-sign') { thisPipeline ->
       group = 'go-cd'
       materials() {
         git('codesigning') {
@@ -133,7 +133,8 @@ GoCD.script {
               tasks { tasks ->
                 stages.first().jobs.getNames().each { jobName ->
                   tasks.fetchArtifact {
-                    stage = stages.first()
+                    pipeline = thisPipeline.name
+                    stage = stages.first().name
                     job = jobName
                     source = "dist"
                     destination = "codesigning/src"
