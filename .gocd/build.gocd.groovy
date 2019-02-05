@@ -138,7 +138,7 @@ GoCD.script {
                     stage = stages.first().name
                     job = jobName
                     source = "dist/${jobName}/metadata.json"
-                    destination = "codesigning/src/${jobName}"
+                    destination = "codesigning/out/${jobName}"
                   }
                 }
 
@@ -147,12 +147,19 @@ GoCD.script {
                   stage = 'dist'
                   job = 'dist'
                   source = "dist/meta/version.json"
-                  destination = "codesigning/src/meta"
+                  destination = "codesigning/out/meta"
                 }
 
                 exec {
                   commandLine = ["rake", "--trace", "metadata:generate"]
                   workingDir = 'codesigning'
+                }
+              }
+
+              artifacts {
+                build {
+                  source = "codesigning/out/metadata.json"
+                  destination = "dist"
                 }
               }
             }
