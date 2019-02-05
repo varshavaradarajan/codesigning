@@ -142,8 +142,10 @@ GoCD.script {
                   }
                 }
 
+                add(fetchArtifactTask('meta'))
+
                 exec {
-                  commandLine = ['ls', '-alR']
+                  commandLine = ['ls', '-alR', 'src/dist']
                 }
               }
             }
