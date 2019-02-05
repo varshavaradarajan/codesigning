@@ -29,5 +29,7 @@ namespace :rpm do
     Dir["#{signing_dir}/*.rpm"].each do |f|
       sh("rpm --checksig '#{f}'")
     end
+
+    generate_metadata_for_single_dir signing_dir, '*.rpm', :rpm
   end
 end

@@ -31,5 +31,7 @@ namespace :deb do
     Dir["#{signing_dir}/*.deb"].each do |f|
       sh("dpkg-sig --verbose --verify '#{f}'")
     end
+
+    generate_metadata_for_single_dir signing_dir, '*.deb', :deb
   end
 end

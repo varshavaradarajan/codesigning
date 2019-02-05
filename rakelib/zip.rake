@@ -1,3 +1,5 @@
+require 'json'
+
 namespace :zip do
   signing_dir = "out/zip"
   zip_source_dir = 'src/zip'
@@ -22,6 +24,6 @@ namespace :zip do
       end
     end
 
-
+    generate_metadata_for_single_dir signing_dir, "*.zip", :generic
   end
 end

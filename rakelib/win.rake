@@ -36,5 +36,7 @@ namespace :win do
       sh(%Q{"#{sign_tool}" verify /debug /v /a /pa /hash sha1 "#{f}"})
       sh(%Q{"#{sign_tool}" verify /debug /v /a /pa /hash sha256 "#{f}"})
     end
+
+    generate_metadata_for_single_dir signing_dir, '*.exe', :win
   end
 end

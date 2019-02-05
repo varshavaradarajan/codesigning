@@ -47,5 +47,7 @@ namespace :osx do
     end
 
     rm_rf 'tmp'
+
+    generate_metadata_for_single_dir signing_dir, '*.zip', :osx
   end
 end
