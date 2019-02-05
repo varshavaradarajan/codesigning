@@ -133,19 +133,25 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks { tasks ->
                 stages.first().jobs.getNames().each { jobName ->
-                  tasks.fetchArtifact {
+                  tasks.fetchFile {
                     pipeline = thisPipeline.name
                     stage = stages.first().name
                     job = jobName
-                    source = "dist"
-                    destination = "codesigning/src"
+                    source = "dist/${jobName}/metadata.json"
+                    destination = "codesigning/src/${jobName}/metadata.json"
                   }
                 }
 
-                add(fetchArtifactTask('meta'))
+                tasks.fetchArtifact {
+                    pipeline = 'installers'
+                    stage = 'dist'
+                    job = 'dist'
+                    source = "dist/meta"
+                    destination = "codesigning/src/dist"
+                }
 
                 exec {
-                  commandLine = ['ls', '-alR', 'codesigning/src/dist']
+                  commandLine = ['ls', '-alR', 'codesigning/src']
                 }
               }
             }
