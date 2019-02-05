@@ -114,6 +114,7 @@ GoCD.script {
               }
             }
             job('osx') {
+              resources = ['mac', 'signer']
               tasks {
                 add(fetchArtifactTask('osx'))
                 add(signArtifactTask('osx'))
