@@ -13,8 +13,6 @@ namespace :win do
       open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
       sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output windows-code-sign.p12 windows-code-sign.p12.gpg")
     end
-
-    sh("choco install windows-sdk-8.1 --yes --no-progress")
   end
 
   desc "sign win binaries"
