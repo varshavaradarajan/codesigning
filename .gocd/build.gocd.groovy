@@ -145,7 +145,7 @@ GoCD.script {
                 add(fetchArtifactTask('meta'))
 
                 exec {
-                  commandLine = ['ls', '-alR', 'src/dist']
+                  commandLine = ['ls', '-alR', 'codesigning/src/dist']
                 }
               }
             }
