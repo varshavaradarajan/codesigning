@@ -3,7 +3,6 @@
 namespace :win do
   signing_dir = "out/win"
   win_source_dir = 'src/win'
-  gpg_signing_id = '0xD8843F288816C449'
 
   # assumes the following:
   # - File `../signing-keys/windows-code-sign.p12.gpg` containing the encrypted p12/pfx codesigning key

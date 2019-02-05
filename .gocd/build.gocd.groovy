@@ -41,7 +41,7 @@ def publishArtifactTask = { String osType ->
 
 GoCD.script {
   environments {
-    environment('gocd') {
+    environment('internal') {
       pipelines = ['code-sign']
     }
   }
@@ -111,6 +111,16 @@ GoCD.script {
 
               artifacts {
                 add(publishArtifactTask('win'))
+              }
+            }
+            job('osx') {
+              tasks {
+                add(fetchArtifactTask('osx'))
+                add(signArtifactTask('osx'))
+              }
+
+              artifacts {
+                add(publishArtifactTask('osx'))
               }
             }
           }
