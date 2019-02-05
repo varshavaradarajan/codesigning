@@ -20,6 +20,6 @@ def generate_metadata_for_single_dir(signing_dir, glob, metadata_key)
       end
     end
 
-    open('metadata.json', 'w') {|f| f.puts(JSON.pretty_generate(metadata_key => metadata))}
+    open('metadata.json', 'w') {|f| f.puts(JSON.generate(metadata_key => metadata))}
   end
 end

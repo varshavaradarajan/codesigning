@@ -5,8 +5,10 @@ namespace :metadata do
   task :generate do
     metadata = {}
     %w(meta deb rpm osx win zip version).each do |dir|
-      metadata.merge!(JSON.parse(File.read(Dir["src/#{dir}/*.json"])))
+      Dir["out/#{dir}/*.json"].each do |json_file|
+        metadata.merge!(JSON.parse(File.read(json_file)))
+      end
     end
-    p metadata
+    open('out/metadata.json', 'w') {|f| f.write(JSON.generate(metadata)) }
   end
 end
