@@ -138,7 +138,7 @@ GoCD.script {
                     stage = stages.first().name
                     job = jobName
                     source = "dist/${jobName}/metadata.json"
-                    destination = "codesigning/src/${jobName}/metadata.json"
+                    destination = "codesigning/src/${jobName}"
                   }
                 }
 
@@ -147,7 +147,7 @@ GoCD.script {
                   stage = 'dist'
                   job = 'dist'
                   source = "dist/meta/version.json"
-                  destination = "codesigning/src/meta/version.json"
+                  destination = "codesigning/src/meta"
                 }
 
                 exec {
