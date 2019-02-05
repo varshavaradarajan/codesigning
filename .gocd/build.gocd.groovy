@@ -151,7 +151,8 @@ GoCD.script {
                 }
 
                 exec {
-                  commandLine = ['ls', '-alR', 'codesigning/src']
+                  commandLine = ["rake", "--trace", "metadata:generate"]
+                  workingDir = 'codesigning'
                 }
               }
             }
