@@ -42,7 +42,7 @@ namespace :osx do
         File.utime(0, 0, f)
       end
       cd("tmp/osx/#{tmp_dir}") do
-        sh("zip -q -r ../../../out/osx/#{File.basename(f)} .")
+        sh("zip -q -r ../../../#{signing_dir}/#{File.basename(f)} .")
       end
     end
 
