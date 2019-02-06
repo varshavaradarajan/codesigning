@@ -1,7 +1,7 @@
 namespace :rpm do
   signing_dir = "out/rpm"
   rpm_source_dir = 'src/rpm'
-  gpg_signing_id = '0xD8843F288816C449'
+  meta_source_dir = 'src/meta'
 
   desc "sign rpm binaries"
   task :sign => ['gpg:setup'] do
@@ -18,11 +18,11 @@ namespace :rpm do
     cd signing_dir do
       Dir["*.rpm"].each do |f|
         # wrap with `setsid ... </dev/null` to avoid attaching to TTY. This otherwise causes a password prompt
-        sh(%Q{setsid sh -c "rpm --addsign --define '_gpg_name #{gpg_signing_id}' '#{f}' < /dev/null"})
+        sh(%Q{setsid sh -c "rpm --addsign --define '_gpg_name #{GPG_SIGNING_ID}' '#{f}' < /dev/null"})
       end
     end
 
-    sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{gpg_signing_id}")
+    sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{GPG_SIGNING_ID}")
     sh("sudo rpm --import GPG-KEY-GOCD-#{Process.pid}")
     rm "GPG-KEY-GOCD-#{Process.pid}"
 
@@ -31,5 +31,12 @@ namespace :rpm do
     end
 
     generate_metadata_for_single_dir signing_dir, '*.rpm', :rpm
+  end
+
+  desc "upload the rpm binaries, after signing the binaries"
+  task :upload => :sign do
+    go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
+
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{S3_BASE_URL}/binaries/#{go_full_version}/rpm")
   end
 end

@@ -16,6 +16,7 @@ def generate_metadata_for_single_dir(signing_dir, glob, metadata_key)
 
 
       checksums.each do |k, v|
+        next unless k =~ /sum$/
         open("#{each_file}.#{k}", 'w') {|f| f.puts([v, File.basename(each_file)].join('  '))}
       end
     end

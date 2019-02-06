@@ -4,6 +4,7 @@ require 'securerandom'
 namespace :osx do
   signing_dir = "out/osx"
   osx_source_dir = 'src/osx'
+  meta_source_dir = 'src/meta'
 
   # assumes the following:
   # - File `../signing-keys/codesign.keychain.password.gpg` containing the encrypted keychain passphrase
@@ -49,5 +50,12 @@ namespace :osx do
     rm_rf 'tmp'
 
     generate_metadata_for_single_dir signing_dir, '*.zip', :osx
+  end
+
+  desc "upload the osx binaries, after signing the binaries"
+  task :upload => :sign do
+    go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
+
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{S3_BASE_URL}/binaries/#{go_full_version}/osx")
   end
 end

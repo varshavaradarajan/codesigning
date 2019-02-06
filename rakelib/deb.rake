@@ -4,7 +4,7 @@
 namespace :deb do
   signing_dir = "out/deb"
   deb_source_dir = 'src/deb'
-  gpg_signing_id = '0xD8843F288816C449'
+  meta_source_dir = 'src/meta'
 
   desc "sign deb binaries"
   task :sign => ['gpg:setup'] do
@@ -20,11 +20,11 @@ namespace :deb do
 
     cd signing_dir do
       Dir["*.deb"].each do |f|
-        sh("dpkg-sig --verbose --sign builder -k '#{gpg_signing_id}' '#{f}'")
+        sh("dpkg-sig --verbose --sign builder -k '#{GPG_SIGNING_ID}' '#{f}'")
       end
     end
 
-    sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{gpg_signing_id}")
+    sh("gpg --armor --output GPG-KEY-GOCD-#{Process.pid} --export #{GPG_SIGNING_ID}")
     sh("sudo apt-key add GPG-KEY-GOCD-#{Process.pid}")
     rm "GPG-KEY-GOCD-#{Process.pid}"
 
@@ -33,5 +33,12 @@ namespace :deb do
     end
 
     generate_metadata_for_single_dir signing_dir, '*.deb', :deb
+  end
+
+  desc "upload the deb binaries, after signing the binaries"
+  task :upload => :sign do
+    go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
+
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{S3_BASE_URL}/binaries/#{go_full_version}/deb")
   end
 end
