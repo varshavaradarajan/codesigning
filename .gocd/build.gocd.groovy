@@ -24,6 +24,19 @@ def fetchArtifactTask = {String osType ->
   })
 }
 
+def cleanTasks = {
+  return [
+          new ExecTask({
+            commandLine = ['git', 'clean', '-dffx']
+            workingDir = 'codesigning'
+          }),
+          new ExecTask({
+            commandLine = ['git', 'clean', '-dffx']
+            workingDir = 'signing-keys'
+          })
+        ]
+
+}
 def createRakeTask = {String osType ->
   return new ExecTask({
                     commandLine = ["rake", "--trace", "${osType}:sign"]
@@ -68,6 +81,7 @@ GoCD.script {
 
       stages { stages ->
         stage('sign') {
+          cleanWorkingDir = true
           secureEnvironmentVariables = [
             GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
             AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
@@ -77,6 +91,7 @@ GoCD.script {
             job('rpm') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
+                addAll(cleanTasks())
                 add(fetchArtifactTask('rpm'))
                 add(fetchArtifactTask('meta'))
                 exec {
@@ -88,6 +103,7 @@ GoCD.script {
             job('deb') {
               elasticProfileId = 'ubuntu-16.04'
               tasks {
+                addAll(cleanTasks())
                 add(fetchArtifactTask('deb'))
                 add(fetchArtifactTask('meta'))
                 exec {
@@ -110,6 +126,7 @@ GoCD.script {
             job('win') {
               elasticProfileId = 'window-dev-build'
               tasks {
+                addAll(cleanTasks())
                 add(fetchArtifactTask('win'))
                 add(fetchArtifactTask('meta'))
                 exec {
@@ -121,6 +138,7 @@ GoCD.script {
             job('osx') {
               resources = ['mac', 'signer']
               tasks {
+                addAll(cleanTasks())
                 add(fetchArtifactTask('osx'))
                 add(fetchArtifactTask('meta'))
                 exec {
@@ -137,6 +155,7 @@ GoCD.script {
             job('generate') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks { tasks ->
+                addAll(cleanTasks())
                 stages.first().jobs.getNames().each { jobName ->
                   tasks.fetchFile {
                     pipeline = thisPipeline.name
