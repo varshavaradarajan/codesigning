@@ -13,7 +13,7 @@ namespace :osx do
   task :setup do
     cd '../signing-keys' do
       open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
-      sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output - gpg-keys.pem.gpg | gpg --import --batch --quiet")
+      sh("gpg --batch --yes --passphrase-file gpg-passphrase --output codesign.keychain.password codesign.keychain.password.gpg")
     end
   end
 
