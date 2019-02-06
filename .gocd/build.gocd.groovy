@@ -78,6 +78,7 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 add(fetchArtifactTask('rpm'))
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "rpm:sign", "rpm:upload", "yum:createrepo"]
                   workingDir = 'codesigning'
@@ -88,6 +89,7 @@ GoCD.script {
               elasticProfileId = 'ubuntu-16.04-with-sudo'
               tasks {
                 add(fetchArtifactTask('deb'))
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "deb:sign", "deb:upload", "apt:createrepo"]
                   workingDir = 'codesigning'
@@ -98,6 +100,7 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 add(fetchArtifactTask('zip'))
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "zip:sign", "zip:upload"]
                   workingDir = 'codesigning'
@@ -108,6 +111,7 @@ GoCD.script {
               elasticProfileId = 'window-dev-build'
               tasks {
                 add(fetchArtifactTask('win'))
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "win:sign", "win:upload"]
                   workingDir = 'codesigning'
@@ -118,6 +122,7 @@ GoCD.script {
               resources = ['mac', 'signer']
               tasks {
                 add(fetchArtifactTask('osx'))
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "osx:sign", "osx:upload"]
                   workingDir = 'codesigning'

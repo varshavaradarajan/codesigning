@@ -3,6 +3,7 @@ require 'json'
 namespace :zip do
   signing_dir = "out/zip"
   zip_source_dir = 'src/zip'
+  meta_source_dir = 'src/meta'
 
   desc "sign zip binaries"
   task :sign => ['gpg:setup'] do
