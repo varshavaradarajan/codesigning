@@ -9,14 +9,8 @@ namespace :gpg do
     mkdir_p ENV['GNUPGHOME']
     chmod 0700, ENV['GNUPGHOME']
     cd '../signing-keys' do
-      fifo_file = "/tmp/gpg-passphrase-#{Process.pid}"
-      begin
-        File.mkfifo("/tmp/gpg-passphrase-#{Process.pid}", 0600)
-        open(fifo_file, 'w+') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
-        sh('gpg --quiet --batch --passphrase-file gpg-passphrase --output - gpg-keys.pem.gpg | gpg --import --batch --quiet')
-      ensure
-        rm_rf fifo_file
-      end
+      open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
+      sh("gpg --quiet --batch --passphrase-file gpg-passphrase --output - gpg-keys.pem.gpg | gpg --import --batch --quiet")
     end
   end
 end
