@@ -29,10 +29,6 @@ def cleanTasks = {
           new ExecTask({
             commandLine = ['git', 'clean', '-dffx']
             workingDir = 'codesigning'
-          }),
-          new ExecTask({
-            commandLine = ['git', 'clean', '-dffx']
-            workingDir = 'signing-keys'
           })
         ]
 
