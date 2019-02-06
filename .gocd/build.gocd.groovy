@@ -86,7 +86,7 @@ GoCD.script {
               }
             }
             job('deb') {
-              elasticProfileId = 'ubuntu-16.04-with-sudo'
+              elasticProfileId = 'ubuntu-16.04'
               tasks {
                 add(fetchArtifactTask('deb'))
                 add(fetchArtifactTask('meta'))
