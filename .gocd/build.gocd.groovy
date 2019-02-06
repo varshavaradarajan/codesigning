@@ -24,7 +24,7 @@ def fetchArtifactTask = {String osType ->
   })
 }
 
-def signArtifactTask = {String osType ->
+def createRakeTask = {String osType ->
   return new ExecTask({
                     commandLine = ["rake", "--trace", "${osType}:sign"]
                     workingDir = 'codesigning'
@@ -76,52 +76,50 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 add(fetchArtifactTask('rpm'))
-                add(signArtifactTask('rpm'))
-              }
-              artifacts {
-                add(publishArtifactTask('rpm'))
+                exec {
+                  commandLine = ["rake", "--trace", "rpm:sign", "yum:createrepo"]
+                  workingDir = 'codesigning'
+                }
               }
             }
             job('deb') {
               elasticProfileId = 'ubuntu-16.04-with-sudo'
               tasks {
                 add(fetchArtifactTask('deb'))
-                add(signArtifactTask('deb'))
-              }
-              artifacts {
-                add(publishArtifactTask('deb'))
+                exec {
+                  commandLine = ["rake", "--trace", "deb:sign", "apt:createrepo"]
+                  workingDir = 'codesigning'
+                }
               }
             }
             job('zip') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 add(fetchArtifactTask('zip'))
-                add(signArtifactTask('zip'))
-              }
-              artifacts {
-                add(publishArtifactTask('zip'))
+                exec {
+                  commandLine = ["rake", "--trace", "zip:sign"]
+                  workingDir = 'codesigning'
+                }
               }
             }
             job('win') {
               elasticProfileId = 'window-dev-build'
               tasks {
                 add(fetchArtifactTask('win'))
-                add(signArtifactTask('win'))
-              }
-
-              artifacts {
-                add(publishArtifactTask('win'))
+                exec {
+                  commandLine = ["rake", "--trace", "win:sign"]
+                  workingDir = 'codesigning'
+                }
               }
             }
             job('osx') {
               resources = ['mac', 'signer']
               tasks {
                 add(fetchArtifactTask('osx'))
-                add(signArtifactTask('osx'))
-              }
-
-              artifacts {
-                add(publishArtifactTask('osx'))
+                exec {
+                  commandLine = ["rake", "--trace", "osx:sign"]
+                  workingDir = 'codesigning'
+                }
               }
             }
           }
