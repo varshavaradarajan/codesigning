@@ -79,7 +79,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('rpm'))
                 exec {
-                  commandLine = ["rake", "--trace", "rpm:sign", "yum:createrepo"]
+                  commandLine = ["rake", "--trace", "rpm:sign", "rpm:upload", "yum:createrepo"]
                   workingDir = 'codesigning'
                 }
               }
@@ -89,7 +89,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('deb'))
                 exec {
-                  commandLine = ["rake", "--trace", "deb:sign", "apt:createrepo"]
+                  commandLine = ["rake", "--trace", "deb:sign", "deb:upload", "apt:createrepo"]
                   workingDir = 'codesigning'
                 }
               }
@@ -99,7 +99,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('zip'))
                 exec {
-                  commandLine = ["rake", "--trace", "zip:sign"]
+                  commandLine = ["rake", "--trace", "zip:sign", "zip:upload"]
                   workingDir = 'codesigning'
                 }
               }
@@ -109,7 +109,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('win'))
                 exec {
-                  commandLine = ["rake", "--trace", "win:sign"]
+                  commandLine = ["rake", "--trace", "win:sign", "win:upload"]
                   workingDir = 'codesigning'
                 }
               }
@@ -119,7 +119,7 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('osx'))
                 exec {
-                  commandLine = ["rake", "--trace", "osx:sign"]
+                  commandLine = ["rake", "--trace", "osx:sign", "osx:upload"]
                   workingDir = 'codesigning'
                 }
               }
