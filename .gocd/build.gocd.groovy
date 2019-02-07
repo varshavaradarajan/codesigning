@@ -84,11 +84,11 @@ GoCD.script {
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
-          environmentVariables = [
-            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
-            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
-            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
-          ]
+//          environmentVariables = [
+//            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
+//            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
+//            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
+//          ]
 
           jobs {
             job('rpm') {
@@ -160,11 +160,11 @@ GoCD.script {
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
-          environmentVariables = [
-            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
-            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
-            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
-          ]
+//          environmentVariables = [
+//            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
+//            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
+//            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
+//          ]
 
           jobs {
             job('generate') {
@@ -176,15 +176,17 @@ GoCD.script {
                   commandString = 'rake --trace metadata:generate[${EXPERIMENTAL_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
                 }
-                // exec {
-                //   commandLine = ["rake", "--trace", "metadata:generate"]
-                //   workingDir = 'codesigning'
-                // }
               }
             }
           }
         }
       }
+
+      environmentVariables = [
+        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
+        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
+        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
+      ]
     }
   }
 }
