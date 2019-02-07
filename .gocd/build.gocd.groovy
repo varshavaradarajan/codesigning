@@ -51,7 +51,7 @@ def publishArtifactTask = { String osType ->
 GoCD.script {
   environments {
     environment('internal') {
-      pipelines = ['code-sign']
+      pipelines = ['code-sign','publish-to-s3']
     }
   }
 
@@ -83,12 +83,6 @@ GoCD.script {
             AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
-
-//          environmentVariables = [
-//            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
-//            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
-//            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
-//          ]
 
           jobs {
             job('rpm') {
@@ -160,12 +154,6 @@ GoCD.script {
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
-//          environmentVariables = [
-//            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
-//            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
-//            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
-//          ]
-
           jobs {
             job('generate') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -183,6 +171,37 @@ GoCD.script {
       }
 
       environmentVariables = [
+        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
+        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
+        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
+      ]
+    }
+    pipeline('publish-to-s3'){
+      group='go-cd'
+      materials(){
+        git('codesigning') {
+          url = 'https://github.com/ketan/codesigning'
+          destination = "codesigning"
+        }
+      }
+
+      stages{
+        stage('publish'){
+          jobs{
+            job('publish'){
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                bash {
+                  commandString = 'rake --trace promote[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
+                  workingDir = 'codesigning'
+                }
+              }
+            }
+          }
+        }
+      }
+
+      environmentVariables=[
         'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
         'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
         'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',

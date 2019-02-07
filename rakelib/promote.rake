@@ -1,3 +1,6 @@
+
+meta_source_dir = 'src/meta'
+
 desc "task to promote artifacts to release"
 task :promote, [:experimental_bucket_url, :stable_bucket_url, :update_bucket_url] do |t, args|
   experimental_bucket_url = args[:experimental_bucket_url]
