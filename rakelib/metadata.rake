@@ -6,8 +6,9 @@ require 'openssl'
 namespace :metadata do
   meta_source_dir = 'src/meta'
   out_dir = 'out/meta'
-  desc "aggregate metadata from all dirs"
-  task :generate => ['gpg:setup', :unlock_update_check_credentials] do
+
+  desc "aggregate metadata for this release for all binaries"
+  task :metadata_json do
     release_time = Time.now.utc
     metadata = JSON.parse(File.read("#{meta_source_dir}/version.json"))
     metadata.merge!(release_time_readable: release_time.xmlschema, release_time: release_time.to_i)
@@ -29,6 +30,14 @@ namespace :metadata do
     end
     open('out/metadata.json', 'w') {|f| f.write(JSON.generate(metadata)) }
     sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/metadata.json s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
+  end
+
+  desc "aggregate metadata for this release for all binaries"
+  task :update_check_json => [:unlock_update_check_credentials] do
+    release_time = Time.now.utc
+    metadata = JSON.parse(File.read("#{meta_source_dir}/version.json"))
+    metadata.merge!(release_time_readable: release_time.xmlschema, release_time: release_time.to_i)
+    go_full_version = metadata['go_full_version']
 
     # generate the update check json
     message = JSON.generate({
@@ -52,11 +61,20 @@ namespace :metadata do
     sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
   end
 
+  desc "Generate all metadata for this release"
+  task :generate => [:metadata_json, :update_check_json] do
+    metadata = JSON.parse(File.read("#{meta_source_dir}/version.json"))
+    go_full_version = metadata['go_full_version']
+
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{S3_UPDATE_CHECK_BUCKET_BASE_URL}/channels/experimental/latest-#{go_full_version}.json --acl public-read --cache-control 'max-age=600'")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{S3_UPDATE_CHECK_BUCKET_BASE_URL}/channels/experimental/latest.json --acl public-read --cache-control 'max-age=600'")
+  end
+
   task :unlock_update_check_credentials do
     cd '../signing-keys/update-check-signing-keys' do
       open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
       Dir['*.gpg'].each do |f|
-        sh("gpg --yes --quiet --batch --passphrase-file gpg-passphrase --output '#{f.gsub(/.gpg$/, '''')}' '#{f}'")
+        sh("gpg --yes --quiet --batch --passphrase-file gpg-passphrase --output '#{f.gsub(/.gpg$/, '')}' '#{f}'")
       end
     end
   end
