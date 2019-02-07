@@ -2,8 +2,8 @@
 # `apt-get install -y debsigs gnupg gnupg-agent dpkg-sig apt-utils bzip2 gzip unzip zip rake sudo`
 # `echo "go ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/go`
 namespace :deb do
-  signing_dir = "out/deb"
-  deb_source_dir = 'src/deb'
+  signing_dir     = "out/deb"
+  deb_source_dir  = 'src/deb'
   meta_source_dir = 'src/meta'
 
   desc "sign deb binaries"
@@ -40,7 +40,10 @@ namespace :deb do
   end
 
   desc "upload the deb binaries, after signing the binaries"
-  task :upload => :sign do
+  task :upload, [:bucket_url] => :sign do |t, args|
+    bucket_url = args[:bucket_url]
+
+    raise "Please specify bucket url" unless bucket_url
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
 
     sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{bucket_url}/binaries/#{go_full_version}/deb")

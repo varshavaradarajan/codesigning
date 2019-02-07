@@ -110,7 +110,7 @@ GoCD.script {
                 add(fetchArtifactTask('deb'))
                 add(fetchArtifactTask('meta'))
                 bash {
-                  commandString = 'rake --trace deb:sign deb:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}] apt:createrepo[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
+                  commandString = 'rake --trace deb:sign[${EXPERIMENTAL_DOWNLOAD_BUCKET}] deb:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}] apt:createrepo[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -132,8 +132,8 @@ GoCD.script {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('win'))
                 add(fetchArtifactTask('meta'))
-                bash {
-                  commandString = 'rake --trace win:sign win:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
+                exec {
+                  commandLine = ['rake' ,'--trace','win:sign', 'win:upload[%EXPERIMENTAL_DOWNLOAD_BUCKET%]']
                   workingDir = 'codesigning'
                 }
               }
@@ -159,6 +159,13 @@ GoCD.script {
             AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
+
+          environmentVariables = [
+            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
+            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
+            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
+          ]
+
           jobs {
             job('generate') {
               elasticProfileId = 'ecs-gocd-dev-build'

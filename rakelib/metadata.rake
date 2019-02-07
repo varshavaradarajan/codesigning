@@ -33,7 +33,7 @@ namespace :metadata do
       end
     end
     open('out/metadata.json', 'w') {|f| f.write(JSON.generate(metadata)) }
-    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/metadata.json s3://#{bucket_url}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/metadata.json s3://#{download_bucket_url}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
   end
 
   desc "aggregate metadata for this release for all binaries"
