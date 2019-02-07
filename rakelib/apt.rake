@@ -6,7 +6,7 @@ namespace :apt do
     rm_rf signing_dir
     mkdir_p signing_dir
 
-    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --delete --exclude='*' --include '*.deb' s3://#{S3_BASE_URL} #{signing_dir}")
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --delete --exclude='*' --include '*.deb' s3://#{S3_DOWNLOAD_BUCKET_BASE_URL} #{signing_dir}")
     cd signing_dir do
       # create the package manifest
       sh("apt-ftparchive packages binaries > Packages")
@@ -23,7 +23,7 @@ namespace :apt do
 
     %w(GOCD-GPG-KEY.asc InRelease Packages Packages.bz2 Packages.gz Release Release.gpg).each do |f|
       # low cache ttl
-      sh("aws s3 cp #{signing_dir}/#{f} s3://#{S3_BASE_URL}/#{f} --acl public-read --cache-control 'max-age=600'")
+      sh("aws s3 cp #{signing_dir}/#{f} s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/#{f} --acl public-read --cache-control 'max-age=600'")
     end
   end
 end

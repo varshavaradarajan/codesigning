@@ -17,7 +17,7 @@ namespace :metadata do
     mkdir_p out_dir
 
     # fetch all metadata from s3
-    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --delete --exclude='*' --include '*.json' s3://#{S3_BASE_URL}/binaries/#{go_full_version} out")
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --delete --exclude='*' --include '*.json' s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version} out")
 
     %w(deb rpm osx win generic).each do |dir|
       json_files = Dir["out/#{dir}/*.json"]
@@ -28,7 +28,7 @@ namespace :metadata do
       end
     end
     open('out/metadata.json', 'w') {|f| f.write(JSON.generate(metadata)) }
-    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/metadata.json s3://#{S3_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/metadata.json s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
 
     # generate the update check json
     message = JSON.generate({
@@ -49,7 +49,7 @@ namespace :metadata do
       }))
     end
 
-    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{S3_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
   end
 
   task :unlock_update_check_credentials do

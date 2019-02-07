@@ -31,6 +31,6 @@ namespace :zip do
   task :upload => :sign do
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
 
-    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{S3_BASE_URL}/binaries/#{go_full_version}/generic")
+    sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{S3_DOWNLOAD_BUCKET_BASE_URL}/binaries/#{go_full_version}/generic")
   end
 end
