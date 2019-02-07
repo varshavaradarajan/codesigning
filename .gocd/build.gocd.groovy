@@ -85,9 +85,9 @@ GoCD.script {
           ]
 
           environmentVariables: [
-            STABLE_DOWNLOAD_BUCKET = 'ketanpkr-test-stable',
-            EXPERIMENTAL_DOWNLOAD_BUCKET = 'ketanpkr-test-experimental/experimental',
-            UPDATE_CHECK_BUCKET = 'ketanpkr-test-update-check'
+            STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
+            EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
+            UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
           ]
 
           jobs {
