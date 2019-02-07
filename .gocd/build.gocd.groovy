@@ -84,7 +84,7 @@ GoCD.script {
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
-          environmentVariables: [
+          environmentVariables = [
             STABLE_DOWNLOAD_BUCKET:'ketanpkr-test-stable',
             EXPERIMENTAL_DOWNLOAD_BUCKET:'ketanpkr-test-experimental/experimental',
             UPDATE_CHECK_BUCKET:'ketanpkr-test-update-check',
