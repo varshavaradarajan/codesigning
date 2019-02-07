@@ -150,36 +150,12 @@ GoCD.script {
           jobs {
             job('generate') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              tasks { tasks ->
+              tasks {
                 addAll(cleanTasks())
-                stages.first().jobs.getNames().each { jobName ->
-                  tasks.fetchFile {
-                    pipeline = thisPipeline.name
-                    stage = stages.first().name
-                    job = jobName
-                    source = "dist/${jobName}/metadata.json"
-                    destination = "codesigning/out/${jobName}"
-                  }
-                }
-
-                tasks.fetchFile {
-                  pipeline = 'installers'
-                  stage = 'dist'
-                  job = 'dist'
-                  source = "dist/meta/version.json"
-                  destination = "codesigning/out/meta"
-                }
-
+                add(fetchArtifactTask('meta'))
                 exec {
                   commandLine = ["rake", "--trace", "metadata:generate"]
                   workingDir = 'codesigning'
-                }
-              }
-
-              artifacts {
-                build {
-                  source = "codesigning/out/metadata.json"
-                  destination = "dist"
                 }
               }
             }

@@ -9,7 +9,7 @@ def generate_metadata_for_single_dir(signing_dir, glob, metadata_key)
         sha1sum:   Digest::SHA1.hexdigest(file_contents),
         sha256sum: Digest::SHA256.hexdigest(file_contents),
         sha512sum: Digest::SHA512.hexdigest(file_contents),
-        file: "zip/#{each_file}",
+        file: "#{metadata_key}/#{each_file}",
       }
 
       metadata[component] = checksums
