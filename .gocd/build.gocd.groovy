@@ -75,7 +75,7 @@ GoCD.script {
         }
       }
 
-      stages { stages ->
+      stages {
         stage('sign') {
           cleanWorkingDir = true
           secureEnvironmentVariables = [
@@ -83,6 +83,13 @@ GoCD.script {
             AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
             AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
+
+          environmentVariables: [
+            STABLE_DOWNLOAD_BUCKET = 'ketanpkr-test-stable',
+            EXPERIMENTAL_DOWNLOAD_BUCKET = 'ketanpkr-test-experimental/experimental',
+            UPDATE_CHECK_BUCKET = 'ketanpkr-test-update-check'
+          ]
+
           jobs {
             job('rpm') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -90,8 +97,8 @@ GoCD.script {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('rpm'))
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "rpm:sign", "rpm:upload", "yum:createrepo"]
+                bash {
+                  commandString = 'rake --trace rpm:sign rpm:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}] yum:createrepo[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -102,8 +109,8 @@ GoCD.script {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('deb'))
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "deb:sign", "deb:upload", "apt:createrepo"]
+                bash {
+                  commandString = 'rake --trace deb:sign deb:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}] apt:createrepo[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -113,8 +120,8 @@ GoCD.script {
               tasks {
                 add(fetchArtifactTask('zip'))
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "zip:sign", "zip:upload"]
+                bash {
+                  commandString = 'rake --trace zip:sign zip:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -125,8 +132,8 @@ GoCD.script {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('win'))
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "win:sign", "win:upload"]
+                bash {
+                  commandString = 'rake --trace win:sign win:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -137,8 +144,8 @@ GoCD.script {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('osx'))
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "osx:sign", "osx:upload"]
+                bash {
+                  commandString = 'rake --trace osx:sign osx:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
@@ -158,10 +165,14 @@ GoCD.script {
               tasks {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('meta'))
-                exec {
-                  commandLine = ["rake", "--trace", "metadata:generate"]
+                bash {
+                  commandString = 'rake --trace metadata:generate[${EXPERIMENTAL_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
                 }
+                // exec {
+                //   commandLine = ["rake", "--trace", "metadata:generate"]
+                //   workingDir = 'codesigning'
+                // }
               }
             }
           }
