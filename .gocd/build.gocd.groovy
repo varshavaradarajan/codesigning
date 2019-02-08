@@ -190,6 +190,7 @@ GoCD.script {
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
           destination = "codesigning"
+          blacklist = ["**/*.*", "**/*"]
         }
 
         dependency('code-sign') {
