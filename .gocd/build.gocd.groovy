@@ -51,7 +51,7 @@ def publishArtifactTask = { String osType ->
 GoCD.script {
   environments {
     environment('internal') {
-      pipelines = ['code-sign','publish-to-s3']
+      pipelines = ['code-sign', 'promote-stable-release']
     }
   }
 
@@ -177,7 +177,7 @@ GoCD.script {
       }
     }
 
-    pipeline('publish-to-s3') {
+    pipeline('promote-stable-release') {
       group='go-cd'
 
       environmentVariables=[
@@ -198,7 +198,12 @@ GoCD.script {
           destination = "codesigning"
           blacklist = ["**/*.*", "**/*"]
         }
-
+        svn('signing-keys') {
+          url = "https://github.com/gocd-private/signing-keys/trunk"
+          username = "gocd-ci-user"
+          encryptedPassword = "AES:taOvOCaXsoVwzIi+xIGLdA==:GSfhZ6KKt6MXKp/wdYYoyBQKKzbTiyDa+35kDgkEIOF75s9lzerGInbqbUM7nUKc"
+          destination = "signing-keys"
+        }
         dependency('code-sign') {
           pipeline = 'code-sign'
           stage = 'metadata'
@@ -206,20 +211,83 @@ GoCD.script {
       }
 
       stages{
+        stage('promote-binaries') {
+          jobs{
+            job('promote-binaries') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                fetchDirectory {
+                  pipeline = 'installers/code-sign'
+                  stage = 'dist'
+                  job = 'dist'
+                  source = "dist/meta"
+                  destination = "codesigning/src"
+                }
+                bash{
+                  commandString='rake --trace promote:copy_binaries_from_experimental_to_stable[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir='codesigning'
+                }
+              }
+            }
+          }
+        }
+
+        stage('create-repositories') {
+          jobs {
+            job('apt') {
+              elasticProfileId = 'ubuntu-16.04'
+              tasks {
+                fetchDirectory {
+                  pipeline = 'installers/code-sign'
+                  stage = 'dist'
+                  job = 'dist'
+                  source = "dist/meta"
+                  destination = "codesigning/src"
+                }
+                bash {
+                  commandString = 'rake --trace apt:createrepo[${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir = 'codesigning'
+                }
+              }
+            }
+
+            job('yum') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                fetchDirectory {
+                  pipeline = 'installers/code-sign'
+                  stage = 'dist'
+                  job = 'dist'
+                  source = "dist/meta"
+                  destination = "codesigning/src"
+                }
+                bash {
+                  commandString = 'rake --trace yum:createrepo[${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir = 'codesigning'
+                }
+              }
+            }
+          }
+        }
+
         stage('publish') {
           jobs{
             job('publish') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 fetchDirectory {
-                    pipeline = 'installers/code-sign'
-                    stage = 'dist'
-                    job = 'dist'
-                    source = "dist/meta"
-                    destination = "codesigning/src"
+                  pipeline = 'installers/code-sign'
+                  stage = 'dist'
+                  job = 'dist'
+                  source = "dist/meta"
+                  destination = "codesigning/src"
                 }
                 bash {
-                  commandString = 'rake --trace promote:default[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
+                  commandString = 'rake --trace metadata:releases_json[${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir = 'codesigning'
+                }
+                bash {
+                  commandString = 'rake --trace promote:update_check_json[${EXPERIMENTAL_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
