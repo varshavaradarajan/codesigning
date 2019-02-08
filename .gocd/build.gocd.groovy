@@ -194,7 +194,7 @@ GoCD.script {
 
         dependency('code-sign') {
           pipeline = 'code-sign'
-            stage = 'metadata'
+          stage = 'metadata'
         }
       }
 
@@ -205,7 +205,7 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 fetchDirectory {
-                    pipeline = 'code-sign/installers'
+                    pipeline = 'installers/code-sign'
                     stage = 'dist'
                     job = 'dist'
                     source = "dist/meta"
