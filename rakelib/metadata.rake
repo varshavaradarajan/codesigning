@@ -46,10 +46,11 @@ namespace :metadata do
 
     sh("aws s3 sync --exclude='*' --include '*/metadata.json' s3://#{bucket_url} #{target_dir.join('repo')}")
 
-    json = Dir["#{target_dir.join('repo', '*', 'metadata.json')}"].sort.collect {|file|
+    json = Dir["#{target_dir.join('repo', 'binaries', '*', 'metadata.json')}"].sort.collect {|file|
       JSON.parse(File.read(file))
     }
-
+    puts "final output:"
+    puts json
     open(target_dir.join('repo', 'releases.json'), 'w') do |file|
       file.write(JSON.generate(json))
     end
