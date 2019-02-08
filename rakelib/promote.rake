@@ -16,11 +16,8 @@ task :sync_experimental_stable, [:bucket_url, :stable_bucket_url] do |t, args|
 
 end
 
-desc "create repository"
-task :create_repository, [:bucket_url, :stable_bucket_url] => [:sync_experimental_stable, "apt:createrepo", "yum:createrepo"]
-
 desc "task to promote artifacts to release"
-task :promote, [:bucket_url, :stable_bucket_url, :update_bucket_url] => [:create_repository] do |t, args|
+task :promote, [:bucket_url, :stable_bucket_url, :update_bucket_url] do |t, args|
   experimental_bucket_url = args[:bucket_url]
   raise "Please specify experimental bucket url" unless experimental_bucket_url
 
@@ -79,4 +76,4 @@ task :upload, [:bucket_url] do |t, args|
 
 end
 
-task :default, [:bucket_url, :stable_bucket_url, :update_bucket_url] => [:promote, :create_releases_json, :upload]
+task :default, [:bucket_url, :stable_bucket_url, :update_bucket_url] => [:sync_experimental_stable, "apt:createrepo", "yum:createrepo", :promote, :create_releases_json, :upload]

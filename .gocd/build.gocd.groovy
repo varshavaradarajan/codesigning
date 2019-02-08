@@ -58,6 +58,12 @@ GoCD.script {
   pipelines {
     pipeline('code-sign') { thisPipeline ->
       group = 'go-cd'
+      environmentVariables = [
+        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
+        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
+        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
+      ]
+
       materials() {
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
@@ -169,28 +175,42 @@ GoCD.script {
           }
         }
       }
+    }
 
-      environmentVariables = [
+    pipeline('publish-to-s3') {
+      group='go-cd'
+
+      environmentVariables=[
         'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
         'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
         'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
       ]
-    }
-    pipeline('publish-to-s3'){
-      group='go-cd'
+
       materials(){
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
           destination = "codesigning"
         }
+
+        dependency('code-sign') {
+          pipeline = 'code-sign'
+            stage = 'metadata'
+        }
       }
 
       stages{
-        stage('publish'){
+        stage('publish') {
           jobs{
-            job('publish'){
+            job('publish') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
+                fetchDirectory {
+                    pipeline = 'code-sign/installers'
+                    stage = 'dist'
+                    job = 'dist'
+                    source = "dist/meta"
+                    destination = "codesigning/src"
+                }
                 bash {
                   commandString = 'rake --trace promote[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
@@ -200,12 +220,6 @@ GoCD.script {
           }
         }
       }
-
-      environmentVariables=[
-        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
-        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
-        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
-      ]
     }
   }
 }
