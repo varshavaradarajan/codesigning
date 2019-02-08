@@ -219,7 +219,7 @@ GoCD.script {
                     destination = "codesigning/src"
                 }
                 bash {
-                  commandString = 'rake --trace promote[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
+                  commandString = 'rake --trace promote:default[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
