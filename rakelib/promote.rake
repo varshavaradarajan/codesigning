@@ -13,6 +13,7 @@ namespace :promote do
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
 
     sh("aws s3 sync s3://#{experimental_bucket_url}/binaries/#{go_full_version} s3://#{stable_bucket_url}/binaries/#{go_full_version} --acl public-read --cache-control 'max-age=31536000'")
+
     # sync adds ons
 
   end

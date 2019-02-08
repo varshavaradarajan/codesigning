@@ -49,8 +49,7 @@ namespace :metadata do
     json = Dir["#{target_dir.join('repo', 'binaries', '*', 'metadata.json')}"].sort.collect {|file|
       JSON.parse(File.read(file))
     }
-    puts "final output:"
-    puts json
+
     open(target_dir.join('repo', 'releases.json'), 'w') do |file|
       file.write(JSON.generate(json))
     end
