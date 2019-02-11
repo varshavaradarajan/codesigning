@@ -61,8 +61,6 @@ namespace :promote do
 
     meta_source_dir = 'src/meta'
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
-    # todo remove this just for testing
-    go_full_version = '19.2.0-8482'
 
     path_to_s3_parent_of_addon = "#{get_path_inside_addon_bucket(stable_addon_bucket_url)}/#{go_full_version}"
 
