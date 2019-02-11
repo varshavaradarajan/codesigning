@@ -61,7 +61,7 @@ GoCD.script {
       environmentVariables = [
         'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
         'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
-        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
+        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check'
       ]
 
       materials() {
@@ -184,6 +184,8 @@ GoCD.script {
         'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
         'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
         'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
+        'ADDONS_EXPERIMENTAL_BUCKET':'ketanpkr-addon-experimental/addons/experimental' ,
+        'ADDONS_STABLE_BUCKET':'ketanpkr-addon-stable/addons'
       ]
 
       secureEnvironmentVariables = [
@@ -225,6 +227,10 @@ GoCD.script {
                 }
                 bash{
                   commandString='rake --trace promote:copy_binaries_from_experimental_to_stable[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir='codesigning'
+                }
+                bash{
+                  commandString='rake --trace promote:copy_addon_from_experimental_to_stable[${ADDONS_EXPERIMENTAL_BUCKET},${ADDONS_STABLE_BUCKET}]'
                   workingDir='codesigning'
                 }
               }
@@ -288,6 +294,10 @@ GoCD.script {
                 }
                 bash {
                   commandString = 'rake --trace promote:update_check_json[${EXPERIMENTAL_DOWNLOAD_BUCKET},${UPDATE_CHECK_BUCKET}]'
+                  workingDir = 'codesigning'
+                }
+                bash {
+                  commandString = 'rake --trace promote:promote_addons_metadata[${ADDONS_EXPERIMENTAL_BUCKET},${ADDONS_STABLE_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
