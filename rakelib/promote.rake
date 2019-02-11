@@ -1,5 +1,6 @@
 require 'json'
 require 'pathname'
+require 'tempfile'
 require_relative '../lib/addon_metadata'
 
 namespace :promote do

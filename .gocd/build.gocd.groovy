@@ -200,6 +200,12 @@ GoCD.script {
           destination = "codesigning"
           blacklist = ["**/*.*", "**/*"]
         }
+        git('enterprise') {
+          url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/enterprise'
+          destination = "go-enterprise"
+          shallowClone="true"
+          blacklist = ["**/*.*", "**/*"]
+        }
         svn('signing-keys') {
           url = "https://github.com/gocd-private/signing-keys/trunk"
           username = "gocd-ci-user"
@@ -209,6 +215,18 @@ GoCD.script {
         dependency('code-sign') {
           pipeline = 'code-sign'
           stage = 'metadata'
+        }
+        dependency('go-packages') {
+          pipeline = 'go-packages'
+          stage = 'fetch_from_build_go_cd'
+        }
+        dependency('regression-pg-gauge') {
+          pipeline = 'regression-pg-gauge'
+          stage = 'regression'
+        }
+        dependency('go-addon-build') {
+          pipeline = 'go-addon-build'
+          stage = 'build-addons'
         }
       }
 

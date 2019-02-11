@@ -1,5 +1,6 @@
 require 'json'
 require 'digest'
+require 'tempfile'
 
 class AddonMetadata
   def initialize(addon_file_s3_parent:, metadata_full_s3_path:, version:, prefix:)
