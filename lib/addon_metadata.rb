@@ -61,4 +61,8 @@ class AddonMetadata
     @combined_metadata_file_location = Tempfile.new(["#{@prefix}_combined_metadata", '.json'])
   end
 
+  def sh(command)
+    puts(command)
+    system(command)
+  end
 end
