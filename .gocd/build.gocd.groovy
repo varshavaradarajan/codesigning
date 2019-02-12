@@ -227,7 +227,7 @@ GoCD.script {
         stage('upload-addons'){
           jobs{
             job('upload'){
-              resources = ['dist-all']
+                elasticProfileId = 'ecs-gocd-dev-build'
               tasks{
                 fetchArtifact{
                   pipeline = 'go-addon-build/go-packages'
@@ -243,10 +243,10 @@ GoCD.script {
                   source = "business-continuity-addon"
                   destination = "codesigning/src/pkg_for_upload"
                 }
-                bash{
-                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
-                  workingDir='codesigning'
-                }
+//                bash{
+//                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
+//                  workingDir='codesigning'
+//                }
                 bash{
                   commandString='export CORRESPONDING_GOCD_VERSION=$(cat target/gocd_version.txt) && rake --trace fetch_and_upload_addons[${ADDONS_EXPERIMENTAL_BUCKET},${CORRESPONDING_GOCD_VERSION}]'
                   workingDir='codesigning'

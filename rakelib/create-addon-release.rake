@@ -15,10 +15,9 @@ task :prepare_addons_for_upload, [:bucket_url, :full_version] do |t, args|
   rm_rf addons_dir
   mkdir_p addons_dir
 
-  sh('ls src/pkg_for_upload')
+  jar_files = Pathname.new('src').join('pkg_for_upload', '*', '*.jar')
 
-  Dir['src/pkg_for_upload/*.jar'].each do |addon|
-    puts(addon)
+  Dir["#{jar_files}"].each do |addon|
     cp addon, addons_dir
   end
 
