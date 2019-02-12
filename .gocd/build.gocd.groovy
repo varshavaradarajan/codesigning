@@ -227,7 +227,7 @@ GoCD.script {
         stage('upload-addons'){
           jobs{
             job('upload'){
-              elasticProfileId = 'ecs-gocd-dev-build'
+              resources = ['dist-all']
               tasks{
                 fetchArtifact{
                   pipeline = 'go-addon-build/go-packages'
