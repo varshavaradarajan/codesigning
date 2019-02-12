@@ -51,7 +51,7 @@ def publishArtifactTask = { String osType ->
 GoCD.script {
   environments {
     environment('internal') {
-      pipelines = ['code-sign', 'promote-stable-release']
+      pipelines = ['code-sign', 'upload-addons', 'promote-stable-release']
     }
   }
 
@@ -177,6 +177,87 @@ GoCD.script {
       }
     }
 
+    pipeline('upload-addons'){
+      group='go-cd'
+
+      environmentVariables=[
+        'GO_ENTERPRISE_DIR':'../go-enterprise',
+        'GO_SERVER_URL':'https://build.gocd.org/go',
+        'BUILD_MAP_USER':'gocd-ci-user',
+        'ADDONS_EXPERIMENTAL_BUCKET':'ketanpkr-addon-experimental/addons/experimental'
+      ]
+
+      secureEnvironmentVariables=[
+        'BUILD_MAP_PASSWORD':'AES:cpJ+mtdIjY3h+5HzVn+oJA==:roxy5Nz2hHz3COmBNHySpqcM4JVgDHPCm45CoSCwSUIuGgq+PQcm3ajV0ZlSmPoX',
+        'CREDENTIALS':'AES:4op4bMtqy6OohX5gw/KHPw==:yFDFPlzijIHPvT5B1/vHOyEWE4oMcwQ5Rc5zcCJ0QE0='
+      ]
+
+      materials(){
+        git('codesigning') {
+          url = 'https://github.com/ketan/codesigning'
+          destination = "codesigning"
+        }
+        git('enterprise') {
+          url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/enterprise'
+          destination = "go-enterprise"
+          shallowClone="true"
+          blacklist = ["**/*.*", "**/*"]
+        }
+        git('gocd_addons_compatibility') {
+          url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/gocd_addons_compatibility'
+          destination = "gocd_addons_compatibility"
+          shallowClone="true"
+          blacklist = ["**/*.*", "**/*"]
+        }
+        dependency('go-packages') {
+          pipeline = 'go-packages'
+          stage = 'fetch_from_build_go_cd'
+        }
+        dependency('regression-pg-gauge') {
+          pipeline = 'regression-pg-gauge'
+          stage = 'regression'
+        }
+        dependency('go-addon-build') {
+          pipeline = 'go-addon-build'
+          stage = 'build-addons'
+        }
+      }
+
+      stages{
+        stage('upload-addons'){
+          jobs{
+            job('upload'){
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks{
+                fetchArtifact{
+                  pipeline = 'go-addon-build/go-packages'
+                  stage = 'build-addons'
+                  job = 'postgresql'
+                  source = "postgresql-addon"
+                  destination = "codesigning/src/pkg_for_upload"
+                }
+                fetchArtifact{
+                  pipeline = 'go-addon-build/go-packages'
+                  stage = 'build-addons'
+                  job = 'business-continuity'
+                  source = "business-continuity-addon"
+                  destination = "codesigning/src/pkg_for_upload"
+                }
+                bash{
+                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
+                  workingDir='codesigning'
+                }
+                bash{
+                  commandString='export CORRESPONDING_GOCD_VERSION=$(cat target/gocd_version.txt) && rake --trace fetch_and_upload_addons[${ADDONS_EXPERIMENTAL_BUCKET},${CORRESPONDING_GOCD_VERSION}]'
+                  workingDir='codesigning'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     pipeline('promote-stable-release') {
       group='go-cd'
 
@@ -215,6 +296,10 @@ GoCD.script {
         dependency('code-sign') {
           pipeline = 'code-sign'
           stage = 'metadata'
+        }
+        dependency('upload-addons') {
+          pipeline = 'upload-addons'
+          stage = 'upload-addons'
         }
         dependency('go-packages') {
           pipeline = 'go-packages'

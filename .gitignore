@@ -3,3 +3,4 @@ src/
 tmp/
 .idea/
 /gocd-groovy-dsl-config-plugin-0.7.3-48.jar
+/pipelines.txt
