@@ -225,6 +225,11 @@ GoCD.script {
 
       stages{
         stage('upload-addons'){
+          secureEnvironmentVariables = [
+            AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
+            AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
+          ]
+
           jobs{
             job('upload'){
                 elasticProfileId = 'ecs-gocd-dev-build'
@@ -243,10 +248,10 @@ GoCD.script {
                   source = "business-continuity-addon"
                   destination = "codesigning/src/pkg_for_upload"
                 }
-//                bash{
-//                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
-//                  workingDir='codesigning'
-//                }
+                bash{
+                  commandString='rake --trace determine_corresponding_gocd_build[${GO_ENTERPRISE_DIR}]'
+                  workingDir='codesigning'
+                }
                 bash{
                   commandString='export CORRESPONDING_GOCD_VERSION=$(cat target/gocd_version.txt) && rake --trace fetch_and_upload_addons[${ADDONS_EXPERIMENTAL_BUCKET},${CORRESPONDING_GOCD_VERSION}]'
                   workingDir='codesigning'
