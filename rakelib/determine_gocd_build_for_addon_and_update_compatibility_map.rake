@@ -41,7 +41,7 @@ task :determine_corresponding_gocd_build, [:go_enterprise_dir] do |t, args|
   if (full_version = find_full_version(gocd_git_revision))
     File.open("target/gocd_version.txt", 'w') {|file| file.write(full_version)}
   else
-    raise "Could not find an entry for #{gocd_git_revision} in releases.json, this usually means dist-all for revision #{gocd_git_revision} has not completed."
+    raise "Could not find an entry for #{gocd_git_revision} in releases.json, this usually means fetch_from_build_go_cd for revision #{gocd_git_revision} has not completed."
   end
 end
 
@@ -66,14 +66,20 @@ task :update_gocd_compatibility_map, [:repo_url] do |t, args|
       "addons"       => addons_hash
   }
 
-  to_be_written = existing_data << info_about_this_build
+  original_object = existing_data.find {|info| info === info_about_this_build}
 
-  File.open(addon_builds_json_file, "w") do |f|
-    f.puts(JSON.pretty_generate(to_be_written))
-  end
+  if original_object == nil
+    to_be_written = existing_data << info_about_this_build
 
-  cd "../gocd_addons_compatibility" do
-    sh ("git add .; git commit -m 'updated addons build info for #{addons.join(',')} against Gocd #{gocd_version}'; git push #{repo_url} master")
+    File.open(addon_builds_json_file, "w") do |f|
+      f.puts(JSON.pretty_generate(to_be_written))
+    end
+
+    cd "../gocd_addons_compatibility" do
+      sh ("git add .; git commit -m 'updated addons build info for #{addons.join(',')} against Gocd #{gocd_version}'; git push #{repo_url} master")
+    end
+  else
+    puts "Information about this build already present in the map!"
   end
 end
 

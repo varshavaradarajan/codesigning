@@ -213,6 +213,10 @@ GoCD.script {
           pipeline = 'go-packages'
           stage = 'fetch_from_build_go_cd'
         }
+        dependency('code-sign') {
+          pipeline = 'code-sign'
+          stage = 'metadata'
+        }
         dependency('regression-pg-gauge') {
           pipeline = 'regression-pg-gauge'
           stage = 'regression'
@@ -249,7 +253,7 @@ GoCD.script {
                   destination = "codesigning/src/pkg_for_upload"
                 }
                 bash{
-                  commandString='rake --trace determine_corresponding_gocd_build[${GO_ENTERPRISE_DIR}]'
+                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
                   workingDir='codesigning'
                 }
                 bash{
