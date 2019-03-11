@@ -20,6 +20,13 @@ def find_full_version gocd_git_revision
   find_build_number_for(gocd_git_revision, experimental_releases_json_download_url) || find_build_number_for(gocd_git_revision, releases_json_download_url)
 end
 
+def find_full_version_from_version_json gocd_git_revision
+  version_information = JSON.parse(File.read("src/meta/version.json"))
+  if version_information["git_sha"] == gocd_git_revision
+    version_information["go_full_version"]
+  end
+end
+
 desc "task to determine the latest gocd build from enterprise directory"
 task :determine_corresponding_gocd_build, [:go_enterprise_dir] do |t, args|
   go_enterprise_dir = args[:go_enterprise_dir]
@@ -38,7 +45,7 @@ task :determine_corresponding_gocd_build, [:go_enterprise_dir] do |t, args|
   rm_rf target_dir
   mkdir_p target_dir
 
-  if (full_version = find_full_version(gocd_git_revision))
+  if (full_version = find_full_version_from_version_json(gocd_git_revision))
     File.open("target/gocd_version.txt", 'w') {|file| file.write(full_version)}
   else
     raise "Could not find an entry for #{gocd_git_revision} in releases.json, this usually means fetch_from_build_go_cd for revision #{gocd_git_revision} has not completed."

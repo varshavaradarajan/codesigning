@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-def fetchArtifactTask = {String osType ->
+def fetchArtifactTask = { String osType ->
   return new FetchArtifactTask(false, {
-                    pipeline = 'installers'
-                    stage = 'dist'
-                    job = 'dist'
-                    source = "dist/${osType}"
-                    destination = "codesigning/src"
+    pipeline = 'installers'
+    stage = 'dist'
+    job = 'dist'
+    source = "dist/${osType}"
+    destination = "codesigning/src"
   })
 }
 
 def cleanTasks = {
   return [
-          new ExecTask({
-            commandLine = ['git', 'clean', '-dffx']
-            workingDir = 'codesigning'
-          })
-        ]
+      new ExecTask({
+        commandLine = ['git', 'clean', '-dffx']
+        workingDir = 'codesigning'
+      })
+  ]
 
 }
-def createRakeTask = {String osType ->
+def createRakeTask = { String osType ->
   return new ExecTask({
-                    commandLine = ["rake", "--trace", "${osType}:sign"]
-                    workingDir = 'codesigning'
+    commandLine = ["rake", "--trace", "${osType}:sign"]
+    workingDir = 'codesigning'
   })
 }
 
 def publishArtifactTask = { String osType ->
   return new BuildArtifact('build', {
 
-                    source = "codesigning/out/${osType}"
-                    destination = "dist"
+    source = "codesigning/out/${osType}"
+    destination = "dist"
   })
 }
 
@@ -59,9 +59,9 @@ GoCD.script {
     pipeline('code-sign') { thisPipeline ->
       group = 'go-cd'
       environmentVariables = [
-        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
-        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
-        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check'
+          'STABLE_DOWNLOAD_BUCKET'      : 'ketanpkr-test-stable',
+          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'ketanpkr-test-experimental/experimental',
+          'UPDATE_CHECK_BUCKET'         : 'ketanpkr-test-update-check'
       ]
 
       materials() {
@@ -79,15 +79,27 @@ GoCD.script {
           pipeline = 'installers'
           stage = 'dist'
         }
+        dependency('regression') {
+          pipeline = 'regression'
+          stage = 'regression-linux'
+        }
+        dependency('regression-SPAs') {
+          pipeline = 'regression-SPAs'
+          stage = 'Firefox'
+        }
+        dependency('acceptance-linux') {
+          pipeline = 'acceptance-linux'
+          stage = 'RunAcceptanceSpecs-plugins'
+        }
       }
 
       stages {
         stage('sign') {
           cleanWorkingDir = true
           secureEnvironmentVariables = [
-            GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-            AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-            AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
+              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
+              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
+              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
           jobs {
@@ -133,7 +145,7 @@ GoCD.script {
                 add(fetchArtifactTask('win'))
                 add(fetchArtifactTask('meta'))
                 exec {
-                  commandLine = ['rake' ,'--trace','win:sign', 'win:upload[%EXPERIMENTAL_DOWNLOAD_BUCKET%]']
+                  commandLine = ['rake', '--trace', 'win:sign', 'win:upload[%EXPERIMENTAL_DOWNLOAD_BUCKET%]']
                   workingDir = 'codesigning'
                 }
               }
@@ -155,9 +167,9 @@ GoCD.script {
 
         stage('metadata') {
           secureEnvironmentVariables = [
-            GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-            AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-            AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
+              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
+              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
+              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
           jobs {
@@ -177,22 +189,22 @@ GoCD.script {
       }
     }
 
-    pipeline('upload-addons'){
-      group='go-cd'
+    pipeline('upload-addons') {
+      group = 'go-cd'
 
-      environmentVariables=[
-        'GO_ENTERPRISE_DIR':'../go-enterprise',
-        'GO_SERVER_URL':'https://build.gocd.org/go',
-        'BUILD_MAP_USER':'gocd-ci-user',
-        'ADDONS_EXPERIMENTAL_BUCKET':'ketanpkr-addon-experimental/addons/experimental'
+      environmentVariables = [
+          'GO_ENTERPRISE_DIR'         : '../go-enterprise',
+          'GO_SERVER_URL'             : 'https://build.gocd.org/go',
+          'BUILD_MAP_USER'            : 'gocd-ci-user',
+          'ADDONS_EXPERIMENTAL_BUCKET': 'ketanpkr-addon-experimental/addons/experimental'
       ]
 
-      secureEnvironmentVariables=[
-        'BUILD_MAP_PASSWORD':'AES:cpJ+mtdIjY3h+5HzVn+oJA==:roxy5Nz2hHz3COmBNHySpqcM4JVgDHPCm45CoSCwSUIuGgq+PQcm3ajV0ZlSmPoX',
-        'CREDENTIALS':'AES:4op4bMtqy6OohX5gw/KHPw==:yFDFPlzijIHPvT5B1/vHOyEWE4oMcwQ5Rc5zcCJ0QE0='
+      secureEnvironmentVariables = [
+          'BUILD_MAP_PASSWORD': 'AES:cpJ+mtdIjY3h+5HzVn+oJA==:roxy5Nz2hHz3COmBNHySpqcM4JVgDHPCm45CoSCwSUIuGgq+PQcm3ajV0ZlSmPoX',
+          'CREDENTIALS'       : 'AES:4op4bMtqy6OohX5gw/KHPw==:yFDFPlzijIHPvT5B1/vHOyEWE4oMcwQ5Rc5zcCJ0QE0='
       ]
 
-      materials(){
+      materials() {
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
           destination = "codesigning"
@@ -200,65 +212,66 @@ GoCD.script {
         git('enterprise') {
           url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/enterprise'
           destination = "go-enterprise"
-          shallowClone="true"
+          shallowClone = "true"
           blacklist = ["**/*.*", "**/*"]
         }
         git('gocd_addons_compatibility') {
           url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/gocd_addons_compatibility'
           destination = "gocd_addons_compatibility"
-          shallowClone="true"
+          shallowClone = "true"
           blacklist = ["**/*.*", "**/*"]
         }
         dependency('go-packages') {
           pipeline = 'go-packages'
           stage = 'fetch_from_build_go_cd'
         }
-        dependency('code-sign') {
-          pipeline = 'code-sign'
-          stage = 'metadata'
-        }
-        dependency('regression-pg-gauge') {
-          pipeline = 'regression-pg-gauge'
-          stage = 'regression'
-        }
         dependency('go-addon-build') {
           pipeline = 'go-addon-build'
           stage = 'build-addons'
         }
+        dependency('installers') {
+          pipeline = 'installers'
+          stage = 'dist'
+        }
+        dependency('code-sign') {
+          pipeline = 'code-sign'
+          stage = 'metadata'
+        }
       }
 
-      stages{
-        stage('upload-addons'){
+      stages {
+        stage('upload-addons') {
           secureEnvironmentVariables = [
-            AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-            AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
+              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
+              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
           ]
 
-          jobs{
-            job('upload'){
-                elasticProfileId = 'ecs-gocd-dev-build'
-              tasks{
-                fetchArtifact{
+          jobs {
+            job('upload') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                add(fetchArtifactTask('meta'))
+                fetchArtifact {
                   pipeline = 'go-addon-build/go-packages'
                   stage = 'build-addons'
                   job = 'postgresql'
                   source = "postgresql-addon"
                   destination = "codesigning/src/pkg_for_upload"
                 }
-                fetchArtifact{
+                fetchArtifact {
                   pipeline = 'go-addon-build/go-packages'
                   stage = 'build-addons'
                   job = 'business-continuity'
                   source = "business-continuity-addon"
                   destination = "codesigning/src/pkg_for_upload"
                 }
-                bash{
-                  commandString='export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
-                  workingDir='codesigning'
+                bash {
+                  commandString = 'export REPO_URL=https://${BUILD_MAP_USER}:${BUILD_MAP_PASSWORD}@github.com/gocd-private/gocd_addons_compatibility.git && rake --trace determine_version_and_update_map[${GO_ENTERPRISE_DIR},${REPO_URL}]'
+                  workingDir = 'codesigning'
                 }
-                bash{
-                  commandString='export CORRESPONDING_GOCD_VERSION=$(cat target/gocd_version.txt) && rake --trace fetch_and_upload_addons[${ADDONS_EXPERIMENTAL_BUCKET},${CORRESPONDING_GOCD_VERSION}]'
-                  workingDir='codesigning'
+                bash {
+                  commandString = 'export CORRESPONDING_GOCD_VERSION=$(cat target/gocd_version.txt) && rake --trace fetch_and_upload_addons[${ADDONS_EXPERIMENTAL_BUCKET},${CORRESPONDING_GOCD_VERSION}]'
+                  workingDir = 'codesigning'
                 }
               }
             }
@@ -268,23 +281,23 @@ GoCD.script {
     }
 
     pipeline('promote-stable-release') {
-      group='go-cd'
+      group = 'go-cd'
 
-      environmentVariables=[
-        'STABLE_DOWNLOAD_BUCKET': 'ketanpkr-test-stable',
-        'EXPERIMENTAL_DOWNLOAD_BUCKET':'ketanpkr-test-experimental/experimental',
-        'UPDATE_CHECK_BUCKET':'ketanpkr-test-update-check',
-        'ADDONS_EXPERIMENTAL_BUCKET':'ketanpkr-addon-experimental/addons/experimental' ,
-        'ADDONS_STABLE_BUCKET':'ketanpkr-addon-stable/addons'
+      environmentVariables = [
+          'STABLE_DOWNLOAD_BUCKET'      : 'ketanpkr-test-stable',
+          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'ketanpkr-test-experimental/experimental',
+          'UPDATE_CHECK_BUCKET'         : 'ketanpkr-test-update-check',
+          'ADDONS_EXPERIMENTAL_BUCKET'  : 'ketanpkr-addon-experimental/addons/experimental',
+          'ADDONS_STABLE_BUCKET'        : 'ketanpkr-addon-stable/addons'
       ]
 
       secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE: 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID: 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
+          GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
+          AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
+          AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
       ]
 
-      materials(){
+      materials() {
         git('codesigning') {
           url = 'https://github.com/ketan/codesigning'
           destination = "codesigning"
@@ -293,7 +306,7 @@ GoCD.script {
         git('enterprise') {
           url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/enterprise'
           destination = "go-enterprise"
-          shallowClone="true"
+          shallowClone = "true"
           blacklist = ["**/*.*", "**/*"]
         }
         svn('signing-keys') {
@@ -324,9 +337,12 @@ GoCD.script {
         }
       }
 
-      stages{
+      stages {
         stage('promote-binaries') {
-          jobs{
+          approval {
+            type = 'manual'
+          }
+          jobs {
             job('promote-binaries') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
@@ -337,13 +353,13 @@ GoCD.script {
                   source = "dist/meta"
                   destination = "codesigning/src"
                 }
-                bash{
-                  commandString='rake --trace promote:copy_binaries_from_experimental_to_stable[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET}]'
-                  workingDir='codesigning'
+                bash {
+                  commandString = 'rake --trace promote:copy_binaries_from_experimental_to_stable[${EXPERIMENTAL_DOWNLOAD_BUCKET},${STABLE_DOWNLOAD_BUCKET}]'
+                  workingDir = 'codesigning'
                 }
-                bash{
-                  commandString='rake --trace promote:copy_addon_from_experimental_to_stable[${ADDONS_EXPERIMENTAL_BUCKET},${ADDONS_STABLE_BUCKET}]'
-                  workingDir='codesigning'
+                bash {
+                  commandString = 'rake --trace promote:copy_addon_from_experimental_to_stable[${ADDONS_EXPERIMENTAL_BUCKET},${ADDONS_STABLE_BUCKET}]'
+                  workingDir = 'codesigning'
                 }
               }
             }
@@ -389,7 +405,7 @@ GoCD.script {
         }
 
         stage('publish') {
-          jobs{
+          jobs {
             job('publish') {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
