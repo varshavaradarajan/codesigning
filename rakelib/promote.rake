@@ -14,6 +14,10 @@ namespace :promote do
     meta_source_dir = 'src/meta'
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
 
+    mkdir_p "out"
+
+    sh("aws s3 cp s3://#{experimental_bucket_url}/binaries/#{go_full_version}/latest.json out/latest.json")
+
     sh("aws s3 sync s3://#{experimental_bucket_url}/binaries/#{go_full_version} s3://#{stable_bucket_url}/binaries/#{go_full_version} --acl public-read --cache-control 'max-age=31536000'")
   end
 
@@ -32,9 +36,9 @@ namespace :promote do
   end
 
   desc "task to promote artifacts to update bucket"
-  task :update_check_json, [:experimental_bucket_url, :update_bucket_url] do |t, args|
-    experimental_bucket_url = args[:experimental_bucket_url]
-    raise "Please specify experimental bucket url" unless experimental_bucket_url
+  task :update_check_json, [:update_bucket_url] do |t, args|
+    # experimental_bucket_url = args[:experimental_bucket_url]
+    # raise "Please specify experimental bucket url" unless experimental_bucket_url
 
     update_bucket_url = args[:update_bucket_url]
     raise "Please specify update bucket url" unless update_bucket_url
@@ -44,11 +48,9 @@ namespace :promote do
 
     sh("aws s3 cp s3://#{update_bucket_url}/channels/supported/latest.json s3://#{update_bucket_url}/channels/supported/latest.previous.json --cache-control 'max-age=600' --acl public-read")
 
-    sh("aws s3 cp s3://#{experimental_bucket_url}/binaries/#{go_full_version}/latest.json /tmp/latest.json")
-
-    sh("aws s3 cp /tmp/latest.json s3://#{update_bucket_url}/channels/supported/latest.json --cache-control 'max-age=600' --acl public-read")
-    sh("aws s3 cp /tmp/latest.json s3://#{update_bucket_url}/channels/supported/latest-#{go_full_version}.json --cache-control 'max-age=600' --acl public-read")
-    sh("rm /tmp/latest.json")
+    sh("aws s3 cp out/latest.json s3://#{update_bucket_url}/channels/supported/latest.json --cache-control 'max-age=600' --acl public-read")
+    sh("aws s3 cp out/latest.json s3://#{update_bucket_url}/channels/supported/latest-#{go_full_version}.json --cache-control 'max-age=600' --acl public-read")
+    sh("rm out/latest.json")
   end
 
   desc "task to promote addons and their metadata"

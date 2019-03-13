@@ -90,8 +90,11 @@ namespace :metadata do
     sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{download_bucket_url}/binaries/#{go_full_version}/ --acl public-read --cache-control 'max-age=31536000'")
   end
 
+  desc 'aggregate all json for variation of installers created'
+  task :aggregate_jsons, [:download_bucket_url] => [:metadata_json, :update_check_json, :releases_json]
+
   desc "Generate all metadata for this release"
-  task :generate, [:download_bucket_url, :update_check_bucket_url] => [:metadata_json, :update_check_json, :releases_json] do |t, args|
+  task :generate, [:update_check_bucket_url] do |t, args|
     update_check_bucket_url = args[:update_check_bucket_url]
 
     raise "Please specify bucket url" unless update_check_bucket_url
