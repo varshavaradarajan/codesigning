@@ -59,14 +59,14 @@ GoCD.script {
     pipeline('code-sign') { thisPipeline ->
       group = 'go-cd'
       environmentVariables = [
-          'STABLE_DOWNLOAD_BUCKET'      : 'ketanpkr-test-stable',
-          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'ketanpkr-test-experimental/experimental',
-          'UPDATE_CHECK_BUCKET'         : 'ketanpkr-test-update-check'
+          'STABLE_DOWNLOAD_BUCKET'      : 'downloadgocdio-downloadgocdios3-192sau789jtkh',
+          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'downloadgocdio-experimentaldownloadss3-dakr8wkhi2bo/experimental',
+          'UPDATE_CHECK_BUCKET'         : 'updategocdio-updategocdios3-1ujj23u8hpqdl'
       ]
 
       materials() {
         git('codesigning') {
-          url = 'https://github.com/ketan/codesigning'
+          url = 'https://github.com/gocd/codesigning'
           destination = "codesigning"
         }
         svn('signing-keys') {
@@ -196,7 +196,7 @@ GoCD.script {
           'GO_ENTERPRISE_DIR'         : '../go-enterprise',
           'GO_SERVER_URL'             : 'https://build.gocd.org/go',
           'BUILD_MAP_USER'            : 'gocd-ci-user',
-          'ADDONS_EXPERIMENTAL_BUCKET': 'ketanpkr-addon-experimental/addons/experimental'
+          'ADDONS_EXPERIMENTAL_BUCKET': 'mini-apps-extensionsexperimentaldownloadss3-hare386lt2d9/addons/experimental'
       ]
 
       secureEnvironmentVariables = [
@@ -206,7 +206,7 @@ GoCD.script {
 
       materials() {
         git('codesigning') {
-          url = 'https://github.com/ketan/codesigning'
+          url = 'https://github.com/gocd/codesigning'
           destination = "codesigning"
         }
         git('enterprise') {
@@ -284,11 +284,11 @@ GoCD.script {
       group = 'go-cd'
 
       environmentVariables = [
-          'STABLE_DOWNLOAD_BUCKET'      : 'ketanpkr-test-stable',
-          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'ketanpkr-test-experimental/experimental',
-          'UPDATE_CHECK_BUCKET'         : 'ketanpkr-test-update-check',
-          'ADDONS_EXPERIMENTAL_BUCKET'  : 'ketanpkr-addon-experimental/addons/experimental',
-          'ADDONS_STABLE_BUCKET'        : 'ketanpkr-addon-stable/addons'
+          'STABLE_DOWNLOAD_BUCKET'      : 'downloadgocdio-downloadgocdios3-192sau789jtkh',
+          'EXPERIMENTAL_DOWNLOAD_BUCKET': 'downloadgocdio-experimentaldownloadss3-dakr8wkhi2bo/experimental',
+          'UPDATE_CHECK_BUCKET'         : 'updategocdio-updategocdios3-1ujj23u8hpqdl',
+          'ADDONS_EXPERIMENTAL_BUCKET'  : 'mini-apps-extensionsexperimentaldownloadss3-hare386lt2d9/addons/experimental',
+          'ADDONS_STABLE_BUCKET'        : 'mini-apps-extensionsdownloadss3-11t0jfofrxhyd/addons'
       ]
 
       secureEnvironmentVariables = [
@@ -299,7 +299,7 @@ GoCD.script {
 
       materials() {
         git('codesigning') {
-          url = 'https://github.com/ketan/codesigning'
+          url = 'https://github.com/gocd/codesigning'
           destination = "codesigning"
           blacklist = ["**/*.*", "**/*"]
         }
