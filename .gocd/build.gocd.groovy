@@ -47,6 +47,23 @@ def publishArtifactTask = { String osType ->
   })
 }
 
+def secureEnvironmentVariableForGoCD = [
+    GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
+    AWS_ACCESS_KEY_ID    : 'AES:+yL/4p2Vh1oiVqkMirOOCw==:eoR5rhgQg3yKpKkDLLdliOlhyjpUts8yk9NfPqB8+eo=',
+    AWS_SECRET_ACCESS_KEY: 'AES:HOzGi5HE4ykrhl9LSNMfJg==:zE66pCSyjrQZjr+mzrYcyFrmIliz/T2wdNm0r+4ttYdUQCA73pT5sPEZ8HuKgxfU'
+]
+
+def secureEnvironmentVariableForUpdateChannel = [
+    GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
+    AWS_ACCESS_KEY_ID    : 'AES:wBgBJL7+OUIbB6lL2oyzhw==:5v8jnATbtSknqet+hOKcWa1Hm8NvhA1wYjDpO91E3Sc=',
+    AWS_SECRET_ACCESS_KEY: 'AES:1eT6nKFMzFIPPUme1Eg95A==:oxzxhe77cedWi3ZN/uPJKpRWAfEmzzUwrF2gZHzohnrTTyJ6jsQNPtlUFuDWashS'
+]
+
+def secureEnvironmentVariableForAddons = [
+    AWS_ACCESS_KEY_ID    : 'AES:JjvuR5shoE8QbY3oLpr/Fw==:KG7+G3mKB//jLALlMgH6qNUubBkvdnBlNjjrxfdaJ5M=',
+    AWS_SECRET_ACCESS_KEY: 'AES:eJrbqOkaHcpvvQCtGA/8wQ==:o3siVHlQIiS666ZOObVy1mH732+q7ZzmE4GQlm1bClnhXULIXXMz/NHwuwD9w+2C'
+]
+
 GoCD.script {
   environments {
     environment('internal') {
@@ -96,11 +113,7 @@ GoCD.script {
         stage('sign') {
           cleanWorkingDir = true
           //credentials for gocd experimental builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForGoCD
 
           jobs {
             job('rpm') {
@@ -167,11 +180,7 @@ GoCD.script {
 
         stage('aggregate-jsons') {
           //credentials for gocd experimental builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForGoCD
           jobs {
             job('aggregate-jsons') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -189,11 +198,7 @@ GoCD.script {
 
         stage('metadata') {
           //credentials for gocd update channel
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForUpdateChannel
 
           jobs {
             job('generate') {
@@ -265,10 +270,7 @@ GoCD.script {
       stages {
         stage('upload-addons') {
           //credentials for gocd addons experimental builds
-          secureEnvironmentVariables = [
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForAddons
 
           jobs {
             job('upload') {
@@ -357,11 +359,7 @@ GoCD.script {
             type = 'manual'
           }
           //credentials for gocd experimental/stable builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForGoCD
           jobs {
             job('promote-binaries') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -384,11 +382,7 @@ GoCD.script {
 
         stage('create-repositories') {
           //credentials for gocd stable builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForGoCD
           jobs {
             job('apt') {
               elasticProfileId = 'ubuntu-16.04'
@@ -428,11 +422,7 @@ GoCD.script {
 
         stage('promote-addons') {
           //credentials for gocd addons experimental/stable builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForAddons
           jobs {
             job('promote-addons') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -460,11 +450,7 @@ GoCD.script {
 
         stage('publish-stable-releases-json') {
           //credentials for gocd stable builds
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForGoCD
           jobs {
             job('publish') {
               elasticProfileId = 'ecs-gocd-dev-build'
@@ -487,11 +473,7 @@ GoCD.script {
 
         stage('publish-latest-json') {
           //credentials for gocd update channel
-          secureEnvironmentVariables = [
-              GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
-              AWS_ACCESS_KEY_ID    : 'AES:LrDnmFW7ccFMuNzSQOUVUA==:S7wAb+ax9rKPi11h8x++3+ZjxHAX0SAGySxHUudsyh4=',
-              AWS_SECRET_ACCESS_KEY: 'AES:YTpL7c+j85Su27egw84Cxg==:rVtWJySwMDMkdOGW4Md7LKkyxJc8X1kJBwXE3ebQfhJdTo7mCAn8jelLSyUAcEFI'
-          ]
+          secureEnvironmentVariables = secureEnvironmentVariableForUpdateChannel
           jobs {
             job('publish') {
               elasticProfileId = 'ecs-gocd-dev-build'
