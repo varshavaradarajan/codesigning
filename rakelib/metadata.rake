@@ -102,8 +102,9 @@ namespace :metadata do
     metadata        = JSON.parse(File.read("#{meta_source_dir}/version.json"))
     go_full_version = metadata['go_full_version']
 
-    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{update_check_bucket_url}/channels/experimental/latest-#{go_full_version}.json --acl public-read --cache-control 'max-age=600'")
-    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} out/latest.json s3://#{update_check_bucket_url}/channels/experimental/latest.json --acl public-read --cache-control 'max-age=600'")
+    sh("ls")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} latest.json s3://#{update_check_bucket_url}/channels/experimental/latest-#{go_full_version}.json --acl public-read --cache-control 'max-age=600'")
+    sh("aws s3 cp #{'--no-progress' unless $stdin.tty?} latest.json s3://#{update_check_bucket_url}/channels/experimental/latest.json --acl public-read --cache-control 'max-age=600'")
   end
 
   task :unlock_update_check_credentials do

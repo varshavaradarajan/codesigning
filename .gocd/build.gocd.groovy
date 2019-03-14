@@ -42,8 +42,19 @@ def createRakeTask = { String osType ->
 
 def publishArtifactTask = { String osType ->
   return new BuildArtifact('build', {
-    source = "codesigning/out/${osType}"
-    destination = "dist"
+    source = "codesigning/out"
+    destination = "out"
+  })
+}
+
+def getArtifact = {  String source1 ->
+  return new FetchArtifactTask(false, {
+    pipeline = 'code-sign'
+    file = true
+    stage = 'aggregate-jsons'
+    job = 'aggregate-jsons'
+    source = "out/latest.json"
+    destination = "codesigning"
   })
 }
 
@@ -184,6 +195,12 @@ GoCD.script {
           jobs {
             job('aggregate-jsons') {
               elasticProfileId = 'ecs-gocd-dev-build'
+              artifacts {
+                build {
+                  destination = 'out'
+                  source = 'codesigning/out/latest.json'
+                }
+              }
               tasks {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('meta'))
@@ -206,6 +223,7 @@ GoCD.script {
               tasks {
                 addAll(cleanTasks())
                 add(fetchArtifactTask('meta'))
+                add(getArtifact())
                 bash {
                   commandString = 'rake --trace metadata:generate[${UPDATE_CHECK_BUCKET}]'
                   workingDir = 'codesigning'
