@@ -293,6 +293,12 @@ GoCD.script {
           jobs {
             job('upload') {
               elasticProfileId = 'ecs-gocd-dev-build'
+              artifacts {
+                build {
+                  destination = 'addon_builds'
+                  source = 'gocd_addons_compatibility/addon_builds.json'
+                }
+              }
               tasks {
                 add(fetchArtifactTask('meta'))
                 fetchArtifact {
