@@ -275,6 +275,10 @@ GoCD.script {
           pipeline = 'go-addon-build'
           stage = 'build-addons'
         }
+        dependency('installers') {
+          pipeline = 'installers'
+          stage = 'dist'
+        }
         dependency('regression-pg-gauge') {
           pipeline = 'regression-pg-gauge'
           stage = 'regression-selenium'
