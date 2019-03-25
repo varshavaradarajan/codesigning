@@ -17,8 +17,8 @@ GoCD.script {
           shallowClone = false
           url = 'https://github.com/gocd/release-activity-scripts'
         }
-        dependency('PromoteToStabxxxle') {
-          pipeline = 'promote-xxxstable-release'
+        dependency('PromoteToStable') {
+          pipeline = 'promote-stable-release'
           stage = 'publish-latest-json'
         }
       }
