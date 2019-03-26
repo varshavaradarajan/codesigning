@@ -37,7 +37,7 @@ GoCD.script {
                   destination = 'codesigning'
                   file = true
                   job = 'dist'
-                  pipeline = 'installers/code-sign/promote-stable-releasee'
+                  pipeline = 'installers/code-sign/promote-stable-release'
                   runIf = 'passed'
                   source = 'dist/meta/version.json'
                   stage = 'dist'
