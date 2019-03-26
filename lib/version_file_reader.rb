@@ -1,5 +1,4 @@
 require 'json'
-require_relative 'env_reader'
 
 class VersionFileReader
   def self.go_version
