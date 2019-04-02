@@ -24,6 +24,14 @@ GoCD.script {
           destination = 'docker-gocd-server'
           autoUpdate = true
         }
+        git('DockerGocdServerCentOS7') {
+          branch = 'master'
+          shallowClone = false
+          url = 'https://git.gocd.io/git/gocd/docker-gocd-server-centos-7'
+          blacklist = ["Dockerfile"]
+          destination = 'docker-gocd-server'
+          autoUpdate = true
+        }
         git('DockerGocdAgent') {
           branch = 'master'
           shallowClone = false
@@ -97,6 +105,40 @@ GoCD.script {
                   commandLine = ['bash', '-c', 'bundle exec rake --trace publish']
                   runIf = 'passed'
                   workingDir = "docker-gocd-server"
+                }
+              }
+            }
+            job('publish-docker-server-centos-7') {
+              elasticProfileId = 'ecs-dind-gocd-agent'
+              runInstanceCount = '1'
+              tasks {
+                fetchArtifact {
+                  file = true
+                  job = 'dist'
+                  pipeline = 'installers/code-sign/promote-stable-release'
+                  runIf = 'passed'
+                  source = 'dist/meta/version.json'
+                  stage = 'dist'
+                  destination = "docker-gocd-server-centos-7"
+                }
+                bash {
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
+                  workingDir = 'codesigning'
+                }
+                exec {
+                  commandLine = ['bash', '-c', 'git config --global user.email "godev+gocd-ci-user@thoughtworks.com" && git config -l']
+                  runIf = 'passed'
+                  workingDir = "docker-gocd-server-centos-7"
+                }
+                exec {
+                  commandLine = ['bash', '-c', 'bundle exec rake --trace docker_push_stable']
+                  runIf = 'passed'
+                  workingDir = "docker-gocd-server-centos-7"
+                }
+                exec {
+                  commandLine = ['bash', '-c', 'bundle exec rake --trace publish']
+                  runIf = 'passed'
+                  workingDir = "docker-gocd-server-centos-7"
                 }
               }
             }
