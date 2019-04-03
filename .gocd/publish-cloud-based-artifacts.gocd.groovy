@@ -29,7 +29,7 @@ GoCD.script {
           shallowClone = false
           url = 'https://git.gocd.io/git/gocd/docker-gocd-server-centos-7'
           blacklist = ["Dockerfile"]
-          destination = 'docker-gocd-server'
+          destination = 'docker-gocd-server-centos-7'
           autoUpdate = true
         }
         git('DockerGocdAgent') {
