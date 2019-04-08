@@ -2,16 +2,16 @@ require 'json'
 
 namespace :docker do
 
-  def push_to_dockerhub(image_name, image_tag, exp = true)
+  def push_to_dockerhub(source_image, destination_image, exp = true)
     experimental_org = ENV['EXP_DOCKERHUB_ORG'] || 'gocdexperimental'
     stable_org       = ENV['STABLE_DOCKERHUB_ORG'] || 'gocd'
 
     org = exp ? experimental_org : stable_org
-    sh("docker tag #{image_name} #{org}/#{image_tag}")
+    sh("docker tag #{source_image} #{org}/#{destination_image}")
 
-    sh("docker push #{org}/#{image_tag}")
+    sh("docker push #{org}/#{destination_image}")
 
-    sh("docker rmi #{image_name}")
+    sh("docker rmi #{source_image}")
   end
 
   task :dockerhub_login do
@@ -40,10 +40,10 @@ namespace :docker do
         metadata.each {|image|
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
-          image_name = "#{image["imageName"]}:#{image["tag"]}"
-          image_tag  = "gocd-#{type}:#{image["tag"]}"
+          source_image = "#{image["imageName"]}:#{image["tag"]}"
+          destination_image  = "gocd-#{type}:#{image["tag"]}"
 
-          push_to_dockerhub(image_name, image_tag, true)
+          push_to_dockerhub(source_image, destination_image, true)
         }
       }
     end
@@ -65,10 +65,10 @@ namespace :docker do
         metadata.each {|image|
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
-          image_name = "#{image["imageName"]}:#{image["tag"]}"
-          image_tag  = "gocd-#{type}:#{image["tag"]}"
+          source_image = "#{image["imageName"]}:#{image["tag"]}"
+          destination_image  = "gocd-#{type}:#{image["tag"]}"
 
-          push_to_dockerhub(image_name, image_tag, false)
+          push_to_dockerhub(source_image, destination_image, false)
         }
       }
     end
