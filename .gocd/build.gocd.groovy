@@ -104,7 +104,7 @@ GoCD.script {
         }
         dependency('installers') {
           pipeline = 'installers'
-          stage = 'dist'
+          stage = 'docker'
         }
         dependency('regression') {
           pipeline = 'regression'
@@ -206,6 +206,7 @@ GoCD.script {
                   runIf = 'passed'
                   source = 'docker-server'
                   stage = 'docker'
+                  destination = "codesigning"
                 }
                 fetchArtifact {
                   job = 'docker-agent'
@@ -213,12 +214,15 @@ GoCD.script {
                   runIf = 'passed'
                   source = 'docker-agent'
                   stage = 'docker'
+                  destination = "codesigning"
                 }
                 bash {
                   commandString = "bundle install --jobs 4 --path .bundle --clean"
+                  workingDir = 'codesigning'
                 }
                 bash {
                   commandString = "bundle exec rake upload_experimental_docker_images"
+                  workingDir = 'codesigning'
                 }
               }
             }
