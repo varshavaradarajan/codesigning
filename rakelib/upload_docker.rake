@@ -11,10 +11,7 @@ namespace :docker do
 
     sh("docker push #{org}/#{destination_image}")
 
-    sh("docker rmi #{source_image}")
-    if source_image != destination_image
-      sh("docker rmi #{destination_image}")
-    end
+    sh("docker rmi #{source_image} #{org}/#{destination_image}")
   end
 
   task :dockerhub_login do
