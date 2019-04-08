@@ -12,6 +12,9 @@ namespace :docker do
     sh("docker push #{org}/#{destination_image}")
 
     sh("docker rmi #{source_image}")
+    if source_image != destination_image
+      sh("docker rmi #{destination_image}")
+    end
   end
 
   task :dockerhub_login do
@@ -41,7 +44,11 @@ namespace :docker do
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
           source_image = "#{image["imageName"]}:#{image["tag"]}"
-          destination_image  = "gocd-#{type}:#{image["tag"]}"
+          if type == "server"
+            destination_image = "gocd-server:#{image["tag"]}"
+          else
+            destination_image = source_image
+          end
 
           push_to_dockerhub(source_image, destination_image, true)
         }
@@ -66,7 +73,11 @@ namespace :docker do
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
           source_image = "#{image["imageName"]}:#{image["tag"]}"
-          destination_image  = "gocd-#{type}:#{image["tag"]}"
+          if type == "server"
+            destination_image = "gocd-server:#{image["tag"]}"
+          else
+            destination_image = source_image
+          end
 
           push_to_dockerhub(source_image, destination_image, false)
         }
