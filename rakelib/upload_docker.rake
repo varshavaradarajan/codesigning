@@ -14,6 +14,15 @@ namespace :docker do
     sh("docker rmi #{source_image} #{org}/#{destination_image}")
   end
 
+  def get_docker_hub_name(image_name, type)
+    if type.to_s === "server"
+      return image_name.gsub! "docker-", ""
+    elsif type.to_s === "agent"
+      return image_name
+    end
+    raise "Invalid type: #{type}"
+  end
+
   task :dockerhub_login do
     token = ENV["DOCKERHUB_TOKEN"] || (raise "Environment variable DOCKERHUB_TOKEN is not specified")
 
@@ -40,12 +49,8 @@ namespace :docker do
         metadata.each {|image|
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
-          source_image = "#{image["imageName"]}:#{image["tag"]}"
-          if type == "server"
-            destination_image = "gocd-server:#{image["tag"]}"
-          else
-            destination_image = source_image
-          end
+          source_image      = "#{image["imageName"]}:#{image["tag"]}"
+          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:#{image["tag"]}"
 
           push_to_dockerhub(source_image, destination_image, true)
         }
@@ -69,12 +74,8 @@ namespace :docker do
         metadata.each {|image|
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
-          source_image = "#{image["imageName"]}:#{image["tag"]}"
-          if type == "server"
-            destination_image = "#{image["imageName"]}:#{image["tag"]}"
-          else
-            destination_image = source_image
-          end
+          source_image      = "#{image["imageName"]}:#{image["tag"]}"
+          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:#{image["tag"]}"
 
           push_to_dockerhub(source_image, destination_image, false)
         }
