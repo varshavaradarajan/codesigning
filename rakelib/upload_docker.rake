@@ -71,7 +71,7 @@ namespace :docker do
 
           source_image = "#{image["imageName"]}:#{image["tag"]}"
           if type == "server"
-            destination_image = "gocd-server:#{image["tag"]}"
+            destination_image = "#{image["imageName"]}:#{image["tag"]}"
           else
             destination_image = source_image
           end
