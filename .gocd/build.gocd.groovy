@@ -194,6 +194,34 @@ GoCD.script {
                 }
               }
             }
+            job('upload-docker-image') {
+              elasticProfileId = 'ecs-gocd-dev-build-dind'
+              secureEnvironmentVariables = [
+                DOCKERHUB_TOKEN: 'AES:KlfOlLUAQMzP/2CZId73YQ==:s8fSRyucqVPMft5PpLPb9bEKc95iN3X5n1f6DK+i/8ZwIFNtw23L5m1y1Qs/RkNoYE34QNrrj1Rk7+4Bphz+yg=='
+              ]
+              tasks {
+                fetchArtifact {
+                  job = 'docker-server'
+                  pipeline = 'installers'
+                  runIf = 'passed'
+                  source = 'docker-server'
+                  stage = 'docker'
+                }
+                fetchArtifact {
+                  job = 'docker-agent'
+                  pipeline = 'installers'
+                  runIf = 'passed'
+                  source = 'docker-agent'
+                  stage = 'docker'
+                }
+                bash {
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
+                }
+                bash {
+                  commandString = "bundle exec rake upload_experimental_docker_images"
+                }
+              }
+            }
           }
         }
 
