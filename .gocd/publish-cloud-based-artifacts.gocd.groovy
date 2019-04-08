@@ -108,7 +108,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 bash {
-                  commandString = "bundle exec rake publish_docker_images"
+                  commandString = "bundle exec rake docker:publish_docker_images"
                   workingDir = 'codesigning'
                 }
                 fetchArtifact {

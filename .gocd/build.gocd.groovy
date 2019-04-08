@@ -221,7 +221,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 bash {
-                  commandString = "bundle exec rake upload_experimental_docker_images"
+                  commandString = "bundle exec rake docker:upload_experimental_docker_images"
                   workingDir = 'codesigning'
                 }
               }
