@@ -121,7 +121,7 @@ GoCD.script {
       }
 
       stages {
-        stage('sign') {
+        stage('sign-and-upload') {
           cleanWorkingDir = true
           //credentials for gocd experimental builds
           secureEnvironmentVariables = secureEnvironmentVariableForGoCD
