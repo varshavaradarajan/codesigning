@@ -49,7 +49,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 exec {
-                  commandLine = ['node', 'bump_helm_chart_version.js']
+                  commandLine = ['node', 'lib/bump_helm_chart_version.js']
                   runIf = 'passed'
                   workingDir = 'codesigning'
                 }

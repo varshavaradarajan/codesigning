@@ -231,7 +231,7 @@ GoCD.script {
                   workingDir = "codesigning"
                 }
                 bash {
-                  commandString = 'node update_dockerhub_full_description.js gocdexperimental'
+                  commandString = 'node lib/update_dockerhub_full_description.js gocdexperimental'
                   runIf = 'passed'
                   workingDir = "codesigning"
                 }

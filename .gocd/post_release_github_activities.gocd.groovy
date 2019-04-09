@@ -48,7 +48,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 exec {
-                  commandLine = ['node', 'draft_new_release.js']
+                  commandLine = ['node', 'lib/draft_new_release.js']
                   runIf = 'passed'
                   workingDir = 'codesigning'
                 }
