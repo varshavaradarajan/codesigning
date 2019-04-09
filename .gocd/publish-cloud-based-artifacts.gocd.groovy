@@ -360,7 +360,7 @@ GoCD.script {
                   workingDir = "codesigning"
                 }
                 exec {
-                  commandLine = ['bash', '-c', 'node update_dockerhub_full_description.js']
+                  commandLine = ['bash', '-c', 'node update_dockerhub_full_description.js gocd']
                   runIf = 'passed'
                   workingDir = "codesigning"
                 }

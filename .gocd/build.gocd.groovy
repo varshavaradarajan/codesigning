@@ -197,7 +197,9 @@ GoCD.script {
             job('upload-docker-image') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
-                DOCKERHUB_TOKEN: 'AES:KlfOlLUAQMzP/2CZId73YQ==:s8fSRyucqVPMft5PpLPb9bEKc95iN3X5n1f6DK+i/8ZwIFNtw23L5m1y1Qs/RkNoYE34QNrrj1Rk7+4Bphz+yg=='
+                DOCKERHUB_TOKEN   : 'AES:KlfOlLUAQMzP/2CZId73YQ==:s8fSRyucqVPMft5PpLPb9bEKc95iN3X5n1f6DK+i/8ZwIFNtw23L5m1y1Qs/RkNoYE34QNrrj1Rk7+4Bphz+yg==',
+                DOCKERHUB_USERNAME: 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
+                DOCKERHUB_PASSWORD: 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
               ]
               tasks {
                 fetchArtifact {
@@ -223,6 +225,15 @@ GoCD.script {
                 bash {
                   commandString = "bundle exec rake docker:upload_experimental_docker_images"
                   workingDir = 'codesigning'
+                }
+                exec {
+                  commandLine = ['npm', 'install']
+                  workingDir = "codesigning"
+                }
+                bash {
+                  commandString = 'node update_dockerhub_full_description.js gocdexperimental'
+                  runIf = 'passed'
+                  workingDir = "codesigning"
                 }
               }
             }
