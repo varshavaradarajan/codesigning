@@ -183,17 +183,32 @@ GoCD.script {
               }
             }
             job('osx') {
-              resources = ['mac', 'signer']
+              elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
-                addAll(cleanTasks())
                 add(fetchArtifactTask('osx'))
                 add(fetchArtifactTask('meta'))
                 bash {
-                  commandString = 'rake --trace osx:sign osx:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
+                  workingDir = 'codesigning'
+                }
+                bash {
+                  commandString = 'bundle exec rake --trace osx:sign_as_zip osx:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
                   workingDir = 'codesigning'
                 }
               }
             }
+//            job('osx') {
+//              resources = ['mac', 'signer']
+//              tasks {
+//                addAll(cleanTasks())
+//                add(fetchArtifactTask('osx'))
+//                add(fetchArtifactTask('meta'))
+//                bash {
+//                  commandString = 'rake --trace osx:sign osx:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
+//                  workingDir = 'codesigning'
+//                }
+//              }
+//            }
             job('upload-docker-image') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
