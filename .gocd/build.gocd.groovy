@@ -197,18 +197,6 @@ GoCD.script {
                 }
               }
             }
-//            job('osx') {
-//              resources = ['mac', 'signer']
-//              tasks {
-//                addAll(cleanTasks())
-//                add(fetchArtifactTask('osx'))
-//                add(fetchArtifactTask('meta'))
-//                bash {
-//                  commandString = 'rake --trace osx:sign osx:upload[${EXPERIMENTAL_DOWNLOAD_BUCKET}]'
-//                  workingDir = 'codesigning'
-//                }
-//              }
-//            }
             job('upload-docker-image') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
