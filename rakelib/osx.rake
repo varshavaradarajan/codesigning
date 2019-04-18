@@ -18,33 +18,24 @@ namespace :osx do
   end
 
   desc "sign osx binaries"
-  task :sign => ['setup'] do
-    if Dir["#{osx_source_dir}/*.zip"].empty?
-      raise "Unable to find any binaries in #{osx_source_dir}"
-    end
+  task :sign, [:path] => [:setup] do |task, args|
+    path = args[:path] || osx_source_dir
 
     rm_rf signing_dir
     mkdir_p signing_dir
-    Dir["#{osx_source_dir}/*.zip"].each do |f|
-      tmp_dir = SecureRandom.hex
-      rm_rf 'tmp/osx'
-      mkdir_p 'tmp/osx'
-      sh("unzip -q -o '#{f}' -d tmp/osx/#{tmp_dir}")
-      home_dir = File.expand_path('~')
-      sh(%Q{security unlock-keychain -p \"$(cat #{Dir.pwd}/../signing-keys/codesign.keychain.password)\" '#{home_dir}/Library/Keychains/codesign.keychain-db' && codesign --force --verify --verbose --sign "Developer ID Application: ThoughtWorks (LL62P32G5C)" tmp/osx/#{tmp_dir}/*}) do |ok, res|
-        puts 'Locking keychain again'
-        sh("security lock-keychain '#{home_dir}/Library/Keychains/codesign.keychain-db'")
-        fail 'There was an error performing code OSX signing' unless ok
+
+    scratch_dir = "tmp/osx"
+
+    if File.directory?(path)
+      if Dir["#{path}/*.zip"].empty?
+        raise "Unable to find any binaries in #{path}"
       end
-      Dir["tmp/osx/#{tmp_dir}/**/*"].each do |f|
-        File.utime(0, 0, f)
+
+      Dir["#{path}/*.zip"].each do |f|
+        sign_binaries_within_zip(f, signing_dir, scratch_dir)
       end
-      Dir["tmp/osx/#{tmp_dir}/**/*.*"].each do |f|
-        File.utime(0, 0, f)
-      end
-      cd("tmp/osx/#{tmp_dir}") do
-        sh("zip -q -r ../../../#{signing_dir}/#{File.basename(f)} .")
-      end
+    else
+      sign_binaries_within_zip(path, signing_dir, scratch_dir)
     end
 
     rm_rf 'tmp'
@@ -85,5 +76,46 @@ namespace :osx do
     go_full_version = JSON.parse(File.read("#{meta_source_dir}/version.json"))['go_full_version']
 
     sh("aws s3 sync #{'--no-progress' unless $stdin.tty?} --acl public-read --cache-control 'max-age=31536000' #{signing_dir} s3://#{bucket_url}/binaries/#{go_full_version}/osx")
+  end
+
+  def sign_binaries_within_zip(zipfile, out_dir, scratch_dir="tmp/osx")
+    rm_rf scratch_dir
+    mkdir_p scratch_dir
+
+    work_dir = [scratch_dir, SecureRandom.hex].join("/")
+    out_dir = File.expand_path out_dir
+
+    run("Unpacking zip #{zipfile}", "unzip -q -o #{zipfile.inspect} -d #{work_dir}")
+    glob = "#{work_dir}/**/*"
+
+    keychain_path = File.expand_path(File.exist?("~/Library/Keychains/codesign.keychain-db") ? "~/Library/Keychains/codesign.keychain-db" : "~/Library/Keychains/codesign.keychain")
+    keychain_passwd = File.read("../signing-keys/codesign.keychain.password")
+
+    run("Unlocking keychain", "security unlock-keychain -p #{keychain_passwd.inspect} #{keychain_path.inspect}") do
+      Dir.glob(glob) do |f|
+        run("Codesigning binary #{f.inspect}", "codesign --force --verify --verbose --sign \"Developer ID Application: ThoughtWorks (LL62P32G5C)\" #{f.inspect}") unless File.directory?(f)
+      end
+      run("Locking keychain again", "security lock-keychain #{keychain_path.inspect}")
+    end
+
+    Dir["#{work_dir}/**/*"].each do |f|
+      File.utime(0, 0, f)
+    end
+
+    Dir["#{work_dir}/**/*.*"].each do |f|
+      File.utime(0, 0, f)
+    end
+
+    cd work_dir do
+      sh("zip -q -r #{out_dir}/#{File.basename(zipfile)} .")
+    end
+  end
+
+  def run(label, cmd, &block)
+    puts label
+    sh(cmd) do |ok, res|
+      fail "Error when: #{label}: #{res}" unless ok
+      block.call if block_given?
+    end
   end
 end
