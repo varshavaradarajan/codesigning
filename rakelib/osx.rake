@@ -1,4 +1,4 @@
-require 'securerandom'
+require "securerandom"
 
 # make sure deps are installed using
 namespace :osx do
@@ -34,13 +34,13 @@ namespace :osx do
     cp path, signed_file
 
     keychain_path = File.expand_path(File.exist?("~/Library/Keychains/codesign.keychain-db") ? "~/Library/Keychains/codesign.keychain-db" : "~/Library/Keychains/codesign.keychain")
-    keychain_passwd = File.read("../signing-keys/codesign.keychain.password")
+    keychain_passwd = "../signing-keys/codesign.keychain.password"
 
-    run("Unlocking keychain", "security unlock-keychain -p #{keychain_passwd.inspect} #{keychain_path.inspect}") do
+    run("Unlocking keychain", "security unlock-keychain -p \"$(cat #{keychain_passwd})\" #{keychain_path}") do
       begin
-        run("Codesigning binary #{signed_file.inspect}", "codesign --force --verify --verbose --sign \"Developer ID Application: ThoughtWorks (LL62P32G5C)\" #{signed_file.inspect}")
+        run("Codesigning binary #{signed_file}", "codesign --force --verify --verbose --sign \"Developer ID Application: ThoughtWorks (LL62P32G5C)\" #{signed_file}")
       ensure
-        run("Locking keychain again", "security lock-keychain #{keychain_path.inspect}")
+        run("Locking keychain again", "security lock-keychain #{keychain_path}")
       end
     end
 
