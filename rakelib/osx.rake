@@ -6,53 +6,6 @@ namespace :osx do
   osx_source_dir  = 'src/osx'
   meta_source_dir = 'src/meta'
 
-  # assumes the following:
-  # - File `../signing-keys/codesign.keychain.password.gpg` containing the encrypted keychain passphrase
-  # - environment variable `GOCD_GPG_PASSPHRASE` containing the passphrase to decrypt the said key
-  desc "setup code signing keys"
-  task :setup do
-    cd '../signing-keys' do
-      open('gpg-passphrase', 'w') {|f| f.write(ENV['GOCD_GPG_PASSPHRASE'])}
-      sh("gpg --batch --yes --passphrase-file gpg-passphrase --output codesign.keychain.password codesign.keychain.password.gpg")
-    end
-  end
-
-  desc "sign a single osx binary"
-  task :sign_single_binary, [:path, :dest_archive] => [:setup] do |task, args|
-    path = args[:path]
-    dest_archive = File.expand_path(args[:dest_archive] || "#{File.basename(path)}.zip")
-
-    fail "You must specify a path to sign" if path.nil?
-    fail "Path #{path} does not exist"  unless File.exist?(path)
-    fail "Path must be a file, not a directory" if File.directory?(path)
-
-    dest_dir = File.dirname(dest_archive)
-    mkdir_p dest_dir # don't ensure_clean_dir in case it points to a parent directory
-    work_dir = ensure_clean_dir(File.join("tmp", SecureRandom.hex))
-    signed_file = File.join(work_dir, File.basename(path))
-
-    cp path, signed_file
-
-    keychain_path = File.expand_path(File.exist?("~/Library/Keychains/codesign.keychain-db") ? "~/Library/Keychains/codesign.keychain-db" : "~/Library/Keychains/codesign.keychain")
-    keychain_passwd = "../signing-keys/codesign.keychain.password"
-
-    run("Unlocking keychain", "security unlock-keychain -p \"$(cat #{keychain_passwd})\" #{keychain_path}") do
-      begin
-        run("Codesigning binary #{signed_file}", "codesign --force --verify --verbose --sign \"Developer ID Application: ThoughtWorks (LL62P32G5C)\" #{signed_file}")
-      ensure
-        run("Locking keychain again", "security lock-keychain #{keychain_path}")
-      end
-    end
-
-    File.utime(0, 0, signed_file)
-
-    cd work_dir do
-      sh("zip -q -r #{dest_archive} .")
-    end
-
-    generate_metadata_for_single_dir dest_dir, '*.zip', :osx
-  end
-
   desc 'sign osx zip instead of binaries'
   task :sign_as_zip => ['gpg:setup'] do
     if Dir["#{osx_source_dir}/*.zip"].empty?
