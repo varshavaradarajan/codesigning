@@ -50,7 +50,7 @@ namespace :win do
     fail "Path #{path} does not exists"  unless File.exist?(path)
     fail "Path must be a file, not a directory" if File.directory?(path)
 
-    dest_dir = ensure_clean_dir(File.dirname(dest_archive))
+    dest_dir = File.dirname(dest_archive)
     work_dir = ensure_clean_dir(File.join("tmp", SecureRandom.hex))
     signed_file = File.join(work_dir, File.basename(path))
 
