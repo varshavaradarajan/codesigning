@@ -42,7 +42,7 @@ namespace :win do
   end
 
   desc "sign a single windows binary"
-  task :sign_single_binary, [:path, :dest_archive] do |task, args|
+  task :sign_single_binary, [:path, :dest_archive] => [:setup] do |task, args|
     path = args[:path]
     dest_archive = File.expand_path(args[:dest_archive] || "#{File.basename(path)}.zip")
 
