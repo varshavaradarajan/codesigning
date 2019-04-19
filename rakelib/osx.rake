@@ -23,7 +23,7 @@ namespace :osx do
     dest_archive = File.expand_path(args[:dest_archive] || "#{File.basename(path)}.zip")
 
     fail "You must specify a path to sign" if path.nil?
-    fail "Path #{path} does not exists"  unless File.exist?(path)
+    fail "Path #{path} does not exist"  unless File.exist?(path)
     fail "Path must be a file, not a directory" if File.directory?(path)
 
     dest_dir = File.dirname(dest_archive)
