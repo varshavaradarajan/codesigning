@@ -16,29 +16,6 @@ GoCD.script {
         AWS_SECRET_ACCESS_KEY: 'AES:vM2KDn65dc57S7z8O9DKBw==:zKxnFyrOZgaB4hqFUCq3mqFhD3L57txNTvbdnvdFFgaP3Z/Ro0dy6Qh5s6yqmxyH'
       ]
       materials {
-        git('DockerGocdServer') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-server'
-          blacklist = ["Dockerfile"]
-          destination = 'docker-gocd-server'
-          autoUpdate = true
-        }
-        git('DockerGocdServerCentOS7') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-server-centos-7'
-          blacklist = ["Dockerfile"]
-          destination = 'docker-gocd-server-centos-7'
-          autoUpdate = true
-        }
-        git('DockerGocdAgent') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-agent'
-          destination = 'docker-gocd-agent'
-          autoUpdate = true
-        }
         git('GocdCloud') {
           branch = 'master'
           shallowClone = false
@@ -67,6 +44,7 @@ GoCD.script {
           url = 'https://git.gocd.io/git/gocd/gocd'
           destination = 'gocd'
           autoUpdate = true
+          blacklist = ["**/*.*", "**/*"]
         }
         dependency('PromoteToStable') {
           pipeline = 'PublishStableRelease'
@@ -222,20 +200,20 @@ GoCD.script {
                   commandLine=["git", "pull"]
                   workingDir="gocd-chocolatey"
                 }
-//                exec {
-//                  commandLine = ['powershell', '-ExecutionPolicy',
-//                                 'ByPass',
-//                                 '-File',
-//                                 '.\\createPackage.ps1',
-//                                 'server']
-//                  runIf = 'passed'
-//                  workingDir = "gocd-chocolatey"
-//                }
-//                exec {
-//                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-server\\gocdserver.$env:version.nupkg -k $env:apiKey --force']
-//                  runIf = 'passed'
-//                  workingDir = "gocd-chocolatey"
-//                }
+                exec {
+                  commandLine = ['powershell', '-ExecutionPolicy',
+                                 'ByPass',
+                                 '-File',
+                                 '.\\createPackage.ps1',
+                                 'server']
+                  runIf = 'passed'
+                  workingDir = "gocd-chocolatey"
+                }
+                exec {
+                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-server\\gocdserver.$env:version.nupkg -k $env:apiKey']
+                  runIf = 'passed'
+                  workingDir = "gocd-chocolatey"
+                }
               }
             }
             job('choco-agent') {
@@ -262,20 +240,20 @@ GoCD.script {
                   commandLine=["git", "pull"]
                   workingDir="gocd-chocolatey"
                 }
-//                exec {
-//                  commandLine = ['powershell', '-ExecutionPolicy',
-//                                 'ByPass',
-//                                 '-File',
-//                                 '.\\createPackage.ps1',
-//                                 'agent']
-//                  runIf = 'passed'
-//                  workingDir = "gocd-chocolatey"
-//                }
-//                exec {
-//                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-agent\\gocdagent.$env:version.nupkg -k $env:apiKey --force']
-//                  runIf = 'passed'
-//                  workingDir = "gocd-chocolatey"
-//                }
+                exec {
+                  commandLine = ['powershell', '-ExecutionPolicy',
+                                 'ByPass',
+                                 '-File',
+                                 '.\\createPackage.ps1',
+                                 'agent']
+                  runIf = 'passed'
+                  workingDir = "gocd-chocolatey"
+                }
+                exec {
+                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-agent\\gocdagent.$env:version.nupkg -k $env:apiKey']
+                  runIf = 'passed'
+                  workingDir = "gocd-chocolatey"
+                }
               }
             }
           }
