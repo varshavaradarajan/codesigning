@@ -7,7 +7,6 @@ task :update_cloud_images do
 
   version           = VersionFileReader.go_version
   stable_bucket_url = env("STABLE_DOWNLOAD_BUCKET")
-
   release_time             = Time.now.utc
   cloud_images_for_version = {
       go_version:            version,
@@ -22,14 +21,14 @@ task :update_cloud_images do
   s3_client = Aws::S3::Client.new(region: 'us-east-1')
 
   begin
-    response = s3_client.get_object(bucket: s3_bucket, key: 'cloud.json')
+    response = s3_client.get_object(bucket: stable_bucket_url, key: 'cloud.json')
   rescue Aws::S3::Errors::NoSuchKey
     File.open('cloud.json', 'w') {|f| f.write([cloud_images_for_version].to_json)}
-    puts "Creating #{s3_bucket}/cloud.json"
+    puts "Creating #{stable_bucket_url}/cloud.json"
     s3_client.put_object({
                              acl:           "public-read",
                              body:          File.read('cloud.json'),
-                             bucket:        s3_bucket,
+                             bucket:        stable_bucket_url,
                              cache_control: "max-age=600",
                              content_type:  'application/json',
                              content_md5:   Digest::MD5.file('cloud.json').base64digest,
@@ -38,9 +37,9 @@ task :update_cloud_images do
   end
   unless response.nil?
     cloud_images_from_bucket = JSON.parse(response.body.string)
-    cloud_images_from_bucket.delete_if {|hash| hash['go_version'] == version}
+    cloud_images_from_bucket.delete_if {|hash| hash['go_version'] == version || hash[:go_version] == version}
     cloud_images_from_bucket << cloud_images_for_version
-    to_be_uploaded = cloud_images_from_bucket.sort_by {|hash| hash['go_version']}
+    to_be_uploaded = cloud_images_from_bucket.sort_by {|hash| ::Gem::Version.new(hash['go_version'] || hash[:go_version]) }
     File.open('cloud.json', 'w') {|f| f.write(to_be_uploaded.to_json)}
     puts "Uploading cloud.json to #{stable_bucket_url}/cloud.json"
     s3_client.put_object({
@@ -91,8 +90,8 @@ def docker_agents(version)
     all_tags      = JSON.parse(tags_response)['results'].map {|tag| tag['name']}
     {image_name: repo['name']} if (repo['name'].start_with?('gocd-agent-') && repo['name'] != 'gocd-agent-deprecated' && all_tags.include?("v#{version}"))
   end
-  agents.compact.sort_by {|agent| agent[:image_name]}
   logout = RestClient.post('https://hub.docker.com/v2/logout/', {}, {:accept => 'application/json', :Authorization => "JWT #{token}"})
+  agents.compact.sort_by {|agent| agent[:image_name]}
 end
 
 
