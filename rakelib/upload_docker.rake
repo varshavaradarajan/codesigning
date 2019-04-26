@@ -61,6 +61,10 @@ namespace :docker do
 
   desc 'Publish docker images to hub'
   task :publish_docker_images => :dockerhub_login do
+
+    metadata        = JSON.parse(File.read("version.json"))
+    go_version = metadata['go_version']
+
     %w[agent server].each do |type|
       manifest_files = Dir["docker-#{type}/manifest.json"]
 
@@ -75,7 +79,7 @@ namespace :docker do
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
           source_image      = "#{image["imageName"]}:#{image["tag"]}"
-          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:#{image["tag"]}"
+          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:#{go_version}"
 
           push_to_dockerhub(source_image, destination_image, false)
         }

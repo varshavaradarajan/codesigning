@@ -89,6 +89,15 @@ GoCD.script {
               ]
               tasks {
                 fetchArtifact {
+                  file = true
+                  job = 'dist'
+                  pipeline = 'installers/code-sign/PublishStableRelease'
+                  runIf = 'passed'
+                  source = 'dist/meta/version.json'
+                  stage = 'dist'
+                  destination = "codesigning"
+                }
+                fetchArtifact {
                   job = 'docker-server'
                   pipeline = 'installers/code-sign/PublishStableRelease'
                   runIf = 'passed'
@@ -105,7 +114,7 @@ GoCD.script {
                   destination = "codesigning"
                 }
                 bash {
-                  commandString = "bundle install --jobs 4 --path .bundle --clean"
+                  commandString = "git pull && bundle install --jobs 4 --path .bundle --clean"
                   workingDir = 'codesigning'
                 }
                 bash {
