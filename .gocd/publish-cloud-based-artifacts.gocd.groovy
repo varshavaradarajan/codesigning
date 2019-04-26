@@ -115,17 +115,17 @@ GoCD.script {
                   job = 'dist'
                   pipeline = 'installers/code-sign/PublishStableRelease'
                   runIf = 'passed'
-                  source = 'dist'
+                  source = 'dist/zip'
                   stage = 'dist'
                   destination = "gocd"
                 }
                 bash {
-                  commandString = 'git config --global user.email "godev+gocd-ci-user@thoughtworks.com" && git config -l'
+                  commandString = 'git config --global user.email "godev+gocd-ci-user@thoughtworks.com"'
                   runIf = 'passed'
                   workingDir = "codesigning"
                 }
                 bash {
-                  commandString = './gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
+                  commandString = './gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip) -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
                   workingDir = 'gocd'
                 }
               }

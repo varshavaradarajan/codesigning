@@ -602,7 +602,7 @@ GoCD.script {
                   destination = "codesigning/src"
                 }
                 bash {
-                  commandString = "git pull && bundle install --jobs 4 --path .bundle --clean"
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
                   workingDir = 'codesigning'
                 }
                 bash {
