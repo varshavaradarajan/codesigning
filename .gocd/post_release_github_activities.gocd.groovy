@@ -47,6 +47,10 @@ GoCD.script {
                   runIf = 'passed'
                   workingDir = 'codesigning'
                 }
+                bash{
+                  commandString="git pull"
+                  workingDir='codesigning'
+                }
                 exec {
                   commandLine = ['node', 'lib/draft_new_release.js']
                   runIf = 'passed'
