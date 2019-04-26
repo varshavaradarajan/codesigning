@@ -59,6 +59,7 @@ GoCD.script {
           url = 'https://git.gocd.io/git/gocd/codesigning'
           destination = 'codesigning'
           autoUpdate = true
+          blacklist = ["**/*.*", "**/*"]
         }
         git('GoCD') {
           branch = 'master'

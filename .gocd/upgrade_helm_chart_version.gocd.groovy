@@ -11,6 +11,7 @@ GoCD.script {
           destination = 'codesigning'
           shallowClone = false
           url = 'https://github.com/gocd/codesigning'
+          blacklist = ["**/*.*", "**/*"]
         }
         dependency('PromoteToStable') {
           pipeline = 'PublishStableRelease'

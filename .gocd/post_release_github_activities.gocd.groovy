@@ -11,6 +11,7 @@ GoCD.script {
           destination = 'codesigning'
           shallowClone = false
           url = 'https://git.gocd.io/git/gocd/codesigning'
+          blacklist = ["**/*.*", "**/*"]
         }
         dependency('PromoteToStable') {
           pipeline = 'PublishStableRelease'
@@ -46,10 +47,6 @@ GoCD.script {
                   commandLine = ['npm', 'install']
                   runIf = 'passed'
                   workingDir = 'codesigning'
-                }
-                bash{
-                  commandString="git pull"
-                  workingDir='codesigning'
                 }
                 exec {
                   commandLine = ['node', 'lib/draft_new_release.js']
