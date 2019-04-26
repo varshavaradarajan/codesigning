@@ -216,7 +216,7 @@ GoCD.script {
                   runIf = 'passed'
                   source = 'dist/meta/version.json'
                   stage = 'dist'
-                  destination = "gocd-chocolatey"
+                  destination = ""
                 }
                 exec{
                   commandLine=["git", "pull"]
@@ -232,7 +232,7 @@ GoCD.script {
                   workingDir = "gocd-chocolatey"
                 }
                 exec {
-                  commandLine = ['powershell', '$env:version=(Get-Content \'version.json\' | ConvertFrom-Json).go_version; choco push gocd-server\\gocdserver.$env:version.nupkg -k $env:apiKey']
+                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-server\\gocdserver.$env:version.nupkg -k $env:apiKey']
                   runIf = 'passed'
                   workingDir = "gocd-chocolatey"
                 }
@@ -256,7 +256,7 @@ GoCD.script {
                   runIf = 'passed'
                   source = 'dist/meta/version.json'
                   stage = 'dist'
-                  destination = "gocd-chocolatey"
+                  destination = ""
                 }
                 exec{
                   commandLine=["git", "pull"]
@@ -272,7 +272,7 @@ GoCD.script {
                   workingDir = "gocd-chocolatey"
                 }
                 exec {
-                  commandLine = ['powershell', '$env:version=(Get-Content \'version.json\' | ConvertFrom-Json).go_version; choco push gocd-agent\\gocdagent.$env:version.nupkg -k $env:apiKey']
+                  commandLine = ['powershell', '$env:version=(Get-Content \'..\\version.json\' | ConvertFrom-Json).go_version; choco push gocd-agent\\gocdagent.$env:version.nupkg -k $env:apiKey']
                   runIf = 'passed'
                   workingDir = "gocd-chocolatey"
                 }

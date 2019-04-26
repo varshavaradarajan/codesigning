@@ -79,7 +79,7 @@ namespace :docker do
           sh("cat docker-#{type}/#{image["file"]} | gunzip | docker load -q")
 
           source_image      = "#{image["imageName"]}:#{image["tag"]}"
-          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:#{go_version}"
+          destination_image = "#{get_docker_hub_name(image["imageName"], type)}:v#{go_version}"
 
           push_to_dockerhub(source_image, destination_image, false)
         }
