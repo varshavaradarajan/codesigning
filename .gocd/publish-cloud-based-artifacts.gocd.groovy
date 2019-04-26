@@ -209,6 +209,10 @@ GoCD.script {
                   stage = 'dist'
                   destination = "gocd-chocolatey"
                 }
+                bash{
+                  commandString="git pull"
+                  workingDir="gocd-chocolatey"
+                }
                 exec {
                   commandLine = ['powershell', '-ExecutionPolicy',
                                  'ByPass',
@@ -219,11 +223,7 @@ GoCD.script {
                   workingDir = "gocd-chocolatey"
                 }
                 exec {
-                  commandLine = ['powershell', 'choco',
-                                 'push',
-                                 'gocd-server\\gocdserver.$env:version.nupkg',
-                                 '-k',
-                                 '$env:apiKey']
+                  commandLine = ['powershell', '$env:version=(Get-Content \'version.json\' | ConvertFrom-Json).go_version; choco push gocd-server\\gocdserver.$env:version.nupkg -k $env:apiKey']
                   runIf = 'passed'
                   workingDir = "gocd-chocolatey"
                 }
@@ -249,6 +249,10 @@ GoCD.script {
                   stage = 'dist'
                   destination = "gocd-chocolatey"
                 }
+                bash{
+                  commandString="git pull"
+                  workingDir="gocd-chocolatey"
+                }
                 exec {
                   commandLine = ['powershell', '-ExecutionPolicy',
                                  'ByPass',
@@ -259,11 +263,7 @@ GoCD.script {
                   workingDir = "gocd-chocolatey"
                 }
                 exec {
-                  commandLine = ['powershell', 'choco',
-                                 'push',
-                                 'gocd-agent\\gocdagent.$env:version.nupkg',
-                                 '-k',
-                                 '$env:apiKey']
+                  commandLine = ['powershell', '$env:version=(Get-Content \'version.json\' | ConvertFrom-Json).go_version; choco push gocd-agent\\gocdagent.$env:version.nupkg -k $env:apiKey']
                   runIf = 'passed'
                   workingDir = "gocd-chocolatey"
                 }
