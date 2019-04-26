@@ -135,7 +135,7 @@ GoCD.script {
                   workingDir = "codesigning"
                 }
                 bash {
-                  commandString = './gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip) -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
+                  commandString = 'git pull && ./gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip) -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
                   workingDir = 'gocd'
                 }
               }
@@ -218,8 +218,8 @@ GoCD.script {
                   stage = 'dist'
                   destination = "gocd-chocolatey"
                 }
-                bash{
-                  commandString="git pull"
+                exec{
+                  commandLine=["git", "pull"]
                   workingDir="gocd-chocolatey"
                 }
                 exec {
@@ -258,8 +258,8 @@ GoCD.script {
                   stage = 'dist'
                   destination = "gocd-chocolatey"
                 }
-                bash{
-                  commandString="git pull"
+                exec{
+                  commandLine=["git", "pull"]
                   workingDir="gocd-chocolatey"
                 }
                 exec {
