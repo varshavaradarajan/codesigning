@@ -32,7 +32,6 @@ GoCD.script {
           jobs {
             job('api.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 exec {
                   commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
@@ -54,7 +53,6 @@ GoCD.script {
             }
             job('plugin-api.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 exec {
                   commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
@@ -76,7 +74,6 @@ GoCD.script {
             }
             job('developer.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 exec {
                   commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
@@ -98,7 +95,6 @@ GoCD.script {
             }
             job('docs.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 exec {
                   commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
@@ -120,7 +116,6 @@ GoCD.script {
             }
             job('extensions-docs.gocd.org') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 exec {
                   commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
@@ -151,7 +146,6 @@ GoCD.script {
           jobs {
             job('api.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 fetchArtifact {
                   file = true
@@ -173,7 +167,6 @@ GoCD.script {
             }
             job('plugin-api.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 fetchArtifact {
                   file = true
@@ -195,7 +188,6 @@ GoCD.script {
             }
             job('developer.go.cd') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               tasks {
                 fetchArtifact {
                   file = true

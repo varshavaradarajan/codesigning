@@ -146,7 +146,6 @@ GoCD.script {
             }
             job('publish-server-amis') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 REGION                     : 'us-east-2',
                 EXTRA_AMI_REGION_TO_COPY_TO: 'us-east-1'
@@ -175,7 +174,6 @@ GoCD.script {
             }
             job('publish-demo-amis') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 REGION                     : 'us-east-2',
                 EXTRA_AMI_REGION_TO_COPY_TO: 'us-east-1'
@@ -204,7 +202,6 @@ GoCD.script {
             }
             job('choco-server') {
               elasticProfileId = 'window-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 version : '',
                 revision: ''
@@ -240,7 +237,6 @@ GoCD.script {
             }
             job('choco-agent') {
               elasticProfileId = 'window-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 version : '',
                 revision: ''
@@ -290,7 +286,6 @@ GoCD.script {
           jobs {
             job('empty_exp_bucket') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               secureEnvironmentVariables = [
                 AWS_ACCESS_KEY_ID    : 'AES:+yL/4p2Vh1oiVqkMirOOCw==:eoR5rhgQg3yKpKkDLLdliOlhyjpUts8yk9NfPqB8+eo=',
                 AWS_SECRET_ACCESS_KEY: 'AES:HOzGi5HE4ykrhl9LSNMfJg==:zE66pCSyjrQZjr+mzrYcyFrmIliz/T2wdNm0r+4ttYdUQCA73pT5sPEZ8HuKgxfU'
@@ -305,7 +300,6 @@ GoCD.script {
             }
             job('update_amis') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 DOCKERHUB_ORG: 'gocd'
               ]
@@ -332,7 +326,6 @@ GoCD.script {
             }
             job('docker_cleanup') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 DOCKERHUB_ORG: 'gocdexperimental'
               ]
@@ -350,7 +343,6 @@ GoCD.script {
             }
             job('update_dockerhub_full_description') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               environmentVariables = [
                 DOCKERHUB_ORG: 'gocdexperimental'
               ]

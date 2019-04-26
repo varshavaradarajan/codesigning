@@ -28,7 +28,6 @@ GoCD.script {
           jobs {
             job('draft-release') {
               elasticProfileId = 'ecs-gocd-dev-build'
-              runInstanceCount = '1'
               secureEnvironmentVariables = [
                 GITHUB_TOKEN: 'AES:Q4IFE6x/f+VCqxpR01+daA==:/fXVmWSK2TBd6cP4I9diey57vcDVVCgHYmh74CjksPprlknmJ0G9OEfdPbjy6uj8',
               ]

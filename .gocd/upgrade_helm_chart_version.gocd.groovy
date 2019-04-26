@@ -31,7 +31,6 @@ GoCD.script {
               environmentVariables = [
                 GIT_USERNAME: 'gocd-ci-user',
               ]
-              runInstanceCount = '1'
               secureEnvironmentVariables = [
                 GIT_PASSWORD: 'AES:7NcdUscgZG/MnwoKPJYeIw==:z2S32FA5xtXtcPoMe2cZK+1id6ejS5FI35VjaH6czxrZZ/UPQW6okuuYz2oqxLjN',
               ]
