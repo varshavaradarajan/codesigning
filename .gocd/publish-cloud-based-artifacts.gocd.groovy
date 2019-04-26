@@ -2,7 +2,7 @@ GoCD.script {
   pipelines {
     pipeline('publish-cloud-based-artifacts') {
       environmentVariables = [
-        AWS_ACCESS_KEY_ID  : 'AKIAVL5CITUNM52DM5G3',
+        AWS_ACCESS_KEY_ID  : 'AKIAVL5CITUNP4CUFG4E',
         GOCD_STABLE_RELEASE: 'true',
         GIT_USER           : 'gocd-ci-user',
         version            : '',
@@ -13,7 +13,7 @@ GoCD.script {
       lockBehavior = 'none'
       secureEnvironmentVariables = [
         GIT_PASSWORD         : 'AES:VamvCdi7OX38zp33L7SJbw==:lm7xodTUI06gb39yj/qhX6zmxlkFuCjUx0+HHV5kn+ynJ2PNqfOMu1LmQio0u+Tj',
-        AWS_SECRET_ACCESS_KEY: 'AES:azgcicAQG3X3VPKYZYn25A==:HfQxnfkN0ai9+tU6VEp/wWJtOwRrWdS5tDGFwlPKiE/koEX3OoXUv7b4SdesoOiD'
+        AWS_SECRET_ACCESS_KEY: 'AES:JN1gGuTX+e27jS5P2F4F1A==:ZZVNpWP2N3h4kKSf39Nb0xgAFuyMKqp4Escu6W0+Q3lC2RHFv8IUMr6EpzyYZmlW'
       ]
       materials {
         git('DockerGocdServer') {
