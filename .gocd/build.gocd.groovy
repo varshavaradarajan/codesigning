@@ -95,6 +95,7 @@ GoCD.script {
         git('codesigning') {
           url = 'https://github.com/gocd/codesigning'
           destination = "codesigning"
+          blacklist = ["**/*.*", "**/*"]
         }
         svn('signing-keys') {
           url = "https://github.com/gocd-private/signing-keys/trunk"
@@ -316,6 +317,7 @@ GoCD.script {
         git('codesigning') {
           url = 'https://github.com/gocd/codesigning'
           destination = "codesigning"
+          blacklist = ["**/*.*", "**/*"]
         }
         git('enterprise') {
           url = 'https://gocd:cz44DJpf2muap@git.gocd.io/git/gocd-private/enterprise'
@@ -460,7 +462,7 @@ GoCD.script {
               elasticProfileId = 'ecs-gocd-dev-build'
               tasks {
                 bash {
-                  commandString = '-c if [ "${REALLY_REALLY_UPLOAD}" != \'YES_I_REALLY_REALLY_WANT_TO_UPLOAD\' ]; then echo "REALLY_REALLY_UPLOAD environment variable should be overridden while triggering."; exit 1; fi'
+                  commandString = 'if [ "${REALLY_REALLY_UPLOAD}" != \'YES_I_REALLY_REALLY_WANT_TO_UPLOAD\' ]; then echo "REALLY_REALLY_UPLOAD environment variable should be overridden while triggering."; exit 1; fi'
                 }
                 fetchDirectory {
                   pipeline = 'installers/code-sign'
