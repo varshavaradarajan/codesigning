@@ -318,7 +318,7 @@ GoCD.script {
                   destination = "codesigning"
                 }
                 exec {
-                  commandLine = ['bash', '-c', 'sleep 6000; bundle install && bundle exec rake update_cloud_images']
+                  commandLine = ['bash', '-c', 'bundle install && bundle exec rake update_cloud_images']
                   runIf = 'passed'
                   workingDir = "codesigning"
                 }

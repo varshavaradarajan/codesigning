@@ -66,7 +66,7 @@ end
 
 def get_amis(type, version)
   amis    = []
-  regions = Aws.partition('aws').regions.map {|region| region.name}
+  regions = Aws.partition('aws').regions.map {|region| region.name}.delete_if {|region| region == 'ap-east-1'}
   regions.each do |region|
     owned_images = image_list(region, type, version)
     populate_amis(amis, region, owned_images)
