@@ -19,7 +19,7 @@ task :update_cloud_images do
       agents_docker:         docker_agents(version)
   }
 
-  s3_client = Aws::S3::Client.new(region: 'us-east-1', credentials: Aws::Credentials.new(env("AWS_ACCESS_KEY_ID"), env("AWS_SECRET_ACCESS_KEY")))
+  s3_client = Aws::S3::Client.new(region: 'us-east-1')
 
   begin
     response = s3_client.get_object(bucket: s3_bucket, key: 'cloud.json')
