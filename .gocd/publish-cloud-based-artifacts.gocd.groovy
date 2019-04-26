@@ -118,7 +118,7 @@ GoCD.script {
                   destination = "codesigning"
                 }
                 bash {
-                  commandString = "git pull && bundle install --jobs 4 --path .bundle --clean"
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
                   workingDir = 'codesigning'
                 }
                 bash {
@@ -139,7 +139,7 @@ GoCD.script {
                   workingDir = "codesigning"
                 }
                 bash {
-                  commandString = 'git pull && ./gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip) -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
+                  commandString = './gradlew --parallel --max-workers 4 docker:assemble -PskipDockerBuild -PdockerbuildServerZipLocation=\$(readlink -f zip/go-server-*.zip) -PdockerbuildAgentZipLocation=\$(readlink -f zip/go-agent-*.zip) -PdockerGitPush="I_REALLY_WANT_TO_DO_THIS"'
                   workingDir = 'gocd'
                 }
               }
@@ -222,10 +222,6 @@ GoCD.script {
                   stage = 'dist'
                   destination = ""
                 }
-                exec{
-                  commandLine=["git", "pull"]
-                  workingDir="gocd-chocolatey"
-                }
                 exec {
                   commandLine = ['powershell', '-ExecutionPolicy',
                                  'ByPass',
@@ -261,10 +257,6 @@ GoCD.script {
                   source = 'dist/meta/version.json'
                   stage = 'dist'
                   destination = ""
-                }
-                exec{
-                  commandLine=["git", "pull"]
-                  workingDir="gocd-chocolatey"
                 }
                 exec {
                   commandLine = ['powershell', '-ExecutionPolicy',
@@ -318,6 +310,8 @@ GoCD.script {
                 DOCKERHUB_ORG: 'gocd'
               ]
               secureEnvironmentVariables = [
+                AWS_ACCESS_KEY_ID    : 'AES:+yL/4p2Vh1oiVqkMirOOCw==:eoR5rhgQg3yKpKkDLLdliOlhyjpUts8yk9NfPqB8+eo=',
+                AWS_SECRET_ACCESS_KEY: 'AES:HOzGi5HE4ykrhl9LSNMfJg==:zE66pCSyjrQZjr+mzrYcyFrmIliz/T2wdNm0r+4ttYdUQCA73pT5sPEZ8HuKgxfU',
                 DOCKERHUB_USERNAME   : 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
                 DOCKERHUB_PASSWORD   : 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
               ]
