@@ -170,7 +170,7 @@ GoCD.script {
                   destination = ""
                 }
                 exec {
-                  commandLine = ['bash', '-c', 'export GOCD_VERSION=$(jq -r ".go_version" ../version.json) && ./packer build -var gocd_version=${GOCD_VERSION} go-server-demo-packer.json']
+                  commandLine = ['bash', '-c', 'export GOCD_VERSION=$(jq -r ".go_version" ../version.json) && ./packer build -var gocd_version=${GOCD_VERSION} -only=amazon-ebs go-server-demo-packer.json']
                   runIf = 'passed'
                   workingDir = "gocd-cloud"
                 }
