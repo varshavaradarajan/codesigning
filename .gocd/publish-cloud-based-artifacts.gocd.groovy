@@ -369,7 +369,7 @@ GoCD.script {
               tasks {
                 fetchArtifact {
                   job = 'docker-server'
-                  pipeline = 'installers'
+                  pipeline = 'installers/code-sign/PublishStableRelease'
                   runIf = 'passed'
                   source = 'docker-server'
                   stage = 'docker'
@@ -377,7 +377,7 @@ GoCD.script {
                 }
                 fetchArtifact {
                   job = 'docker-agent'
-                  pipeline = 'installers'
+                  pipeline = 'installers/code-sign/PublishStableRelease'
                   runIf = 'passed'
                   source = 'docker-agent'
                   stage = 'docker'
