@@ -89,7 +89,7 @@ GoCD.script {
             job('publish-all-docker-images') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
-                DOCKERHUB_TOKEN: 'AES:KlfOlLUAQMzP/2CZId73YQ==:s8fSRyucqVPMft5PpLPb9bEKc95iN3X5n1f6DK+i/8ZwIFNtw23L5m1y1Qs/RkNoYE34QNrrj1Rk7+4Bphz+yg=='
+                DOCKERHUB_TOKEN: 'AES:9lHaYDyh8DZTmK8tjYtS6Q==:5ZWysoBU/pgtyuatOfMq00zKmf5ELs4mxlU4mozGGlDitd0A4k0/ljylNqSWPvMMYBDXzjRLrliM4yo0yQ2Mtw=='
               ]
               tasks {
                 fetchArtifact {
