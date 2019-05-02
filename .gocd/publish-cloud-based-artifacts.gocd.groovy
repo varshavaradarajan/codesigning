@@ -304,8 +304,8 @@ GoCD.script {
                 DOCKERHUB_ORG: 'gocd'
               ]
               secureEnvironmentVariables = [
-                DOCKERHUB_USERNAME   : 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
-                DOCKERHUB_PASSWORD   : 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
+                DOCKERHUB_USERNAME   : 'AES:Pp9depK+IrJQRvZeI3bCMQ==:eOKizyYfEBaLBHZjx2xFJxPWaD0zomriRqKAbaKsMWg=',
+                DOCKERHUB_PASSWORD   : 'AES:BT1Os1J76jvX5yp6ziircw==:abH3RRgXyJVj6ai0k7idz8Do9V2v9s+3NlCNcZ1bF3w='
               ]
               tasks {
                 fetchArtifact {
@@ -330,8 +330,8 @@ GoCD.script {
                 DOCKERHUB_ORG: 'gocdexperimental'
               ]
               secureEnvironmentVariables = [
-                DOCKERHUB_USERNAME: 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
-                DOCKERHUB_PASSWORD: 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
+                DOCKERHUB_USERNAME: 'AES:Pp9depK+IrJQRvZeI3bCMQ==:eOKizyYfEBaLBHZjx2xFJxPWaD0zomriRqKAbaKsMWg=',
+                DOCKERHUB_PASSWORD: 'AES:BT1Os1J76jvX5yp6ziircw==:abH3RRgXyJVj6ai0k7idz8Do9V2v9s+3NlCNcZ1bF3w='
               ]
               tasks {
                 exec {
@@ -347,8 +347,8 @@ GoCD.script {
                 DOCKERHUB_ORG: 'gocdexperimental'
               ]
               secureEnvironmentVariables = [
-                DOCKERHUB_USERNAME: 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
-                DOCKERHUB_PASSWORD: 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
+                DOCKERHUB_USERNAME: 'AES:Pp9depK+IrJQRvZeI3bCMQ==:eOKizyYfEBaLBHZjx2xFJxPWaD0zomriRqKAbaKsMWg=',
+                DOCKERHUB_PASSWORD: 'AES:BT1Os1J76jvX5yp6ziircw==:abH3RRgXyJVj6ai0k7idz8Do9V2v9s+3NlCNcZ1bF3w='
               ]
               tasks {
                 fetchArtifact {
