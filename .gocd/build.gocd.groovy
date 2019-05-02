@@ -201,9 +201,9 @@ GoCD.script {
             job('upload-docker-image') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
-                DOCKERHUB_TOKEN   : 'AES:KlfOlLUAQMzP/2CZId73YQ==:s8fSRyucqVPMft5PpLPb9bEKc95iN3X5n1f6DK+i/8ZwIFNtw23L5m1y1Qs/RkNoYE34QNrrj1Rk7+4Bphz+yg==',
-                DOCKERHUB_USERNAME: 'AES:C6gaOdyi+SDGkkvUHni6zw==:I2kqDgvf9GiwD7zzT1UWjQ==',
-                DOCKERHUB_PASSWORD: 'AES:B2dXEmk4/HMqgLITXECK2A==:dfe+7OkQVOss4fFcXbACy1ZMqW8kVWvt8jyMmgzMDb8='
+                DOCKERHUB_TOKEN   : 'AES:9lHaYDyh8DZTmK8tjYtS6Q==:5ZWysoBU/pgtyuatOfMq00zKmf5ELs4mxlU4mozGGlDitd0A4k0/ljylNqSWPvMMYBDXzjRLrliM4yo0yQ2Mtw==',
+                DOCKERHUB_USERNAME: 'AES:Pp9depK+IrJQRvZeI3bCMQ==:eOKizyYfEBaLBHZjx2xFJxPWaD0zomriRqKAbaKsMWg=',
+                DOCKERHUB_PASSWORD: 'AES:BT1Os1J76jvX5yp6ziircw==:abH3RRgXyJVj6ai0k7idz8Do9V2v9s+3NlCNcZ1bF3w='
               ]
               tasks {
                 fetchArtifact {
