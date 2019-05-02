@@ -201,7 +201,7 @@ GoCD.script {
             job('upload-docker-image') {
               elasticProfileId = 'ecs-gocd-dev-build-dind'
               secureEnvironmentVariables = [
-                DOCKERHUB_TOKEN   : 'AES:9lHaYDyh8DZTmK8tjYtS6Q==:5ZWysoBU/pgtyuatOfMq00zKmf5ELs4mxlU4mozGGlDitd0A4k0/ljylNqSWPvMMYBDXzjRLrliM4yo0yQ2Mtw==',
+                DOCKERHUB_TOKEN   : 'AES:/kyjH+p7WTo/IW1jkM6BvA==:3DwXltcCbvX8aEyZbtUTgnPnRdqt6M3j2IyCgFL+PqEQa7btD0Sxj25eLZxSXyuK0xxyI5MUSWHXVQ7cCbZgmA==',
                 DOCKERHUB_USERNAME: 'AES:Pp9depK+IrJQRvZeI3bCMQ==:eOKizyYfEBaLBHZjx2xFJxPWaD0zomriRqKAbaKsMWg=',
                 DOCKERHUB_PASSWORD: 'AES:BT1Os1J76jvX5yp6ziircw==:abH3RRgXyJVj6ai0k7idz8Do9V2v9s+3NlCNcZ1bF3w='
               ]
