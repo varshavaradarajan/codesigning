@@ -151,7 +151,7 @@ GEM
     aws-sdk-datapipeline (1.9.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
-    aws-sdk-datasync (1.3.0)
+    aws-sdk-datasync (1.4.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
     aws-sdk-dax (1.11.0)
@@ -262,7 +262,7 @@ GEM
     aws-sdk-iot1clickprojects (1.11.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
-    aws-sdk-iotanalytics (1.16.0)
+    aws-sdk-iotanalytics (1.17.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
     aws-sdk-iotdataplane (1.9.0)
@@ -295,7 +295,7 @@ GEM
     aws-sdk-kms (1.18.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
-    aws-sdk-lambda (1.22.0)
+    aws-sdk-lambda (1.23.0)
       aws-sdk-core (~> 3, >= 3.48.2)
       aws-sigv4 (~> 1.1)
     aws-sdk-lambdapreview (1.9.0)
@@ -731,6 +731,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-darwin-17
 
 DEPENDENCIES
   aws-sdk
@@ -738,4 +739,4 @@ DEPENDENCIES
   rest-client
 
 BUNDLED WITH
-   2.0.1
+   1.17.1
