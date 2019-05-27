@@ -42,6 +42,7 @@ GoCD.script {
                   runIf = 'passed'
                   source = 'dist/meta/version.json'
                   stage = 'dist'
+                  file = true
                 }
                 exec {
                   commandLine = ['npm', 'install']
