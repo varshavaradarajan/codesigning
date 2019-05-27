@@ -21,32 +21,6 @@ GoCD.script {
         AWS_SECRET_ACCESS_KEY: 'AES:JN1gGuTX+e27jS5P2F4F1A==:ZZVNpWP2N3h4kKSf39Nb0xgAFuyMKqp4Escu6W0+Q3lC2RHFv8IUMr6EpzyYZmlW'
       ]
       materials {
-        git('DockerGocdServer') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-server'
-          blacklist = ["Dockerfile"]
-          destination = 'docker-gocd-server'
-          autoUpdate = true
-          blacklist = ["**/*.*", "**/*"]
-        }
-        git('DockerGocdServerCentOS7') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-server-centos-7'
-          blacklist = ["Dockerfile"]
-          destination = 'docker-gocd-server-centos-7'
-          autoUpdate = true
-          blacklist = ["**/*.*", "**/*"]
-        }
-        git('DockerGocdAgent') {
-          branch = 'master'
-          shallowClone = false
-          url = 'https://git.gocd.io/git/gocd/docker-gocd-agent'
-          destination = 'docker-gocd-agent'
-          autoUpdate = true
-          blacklist = ["**/*.*", "**/*"]
-        }
         git('GocdCloud') {
           branch = 'master'
           shallowClone = false
