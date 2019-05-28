@@ -207,6 +207,27 @@ GoCD.script {
                 }
               }
             }
+            job('docs.go.cd') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                fetchArtifact {
+                  file = true
+                  job = 'dist'
+                  pipeline = 'installers/code-sign/PublishStableRelease'
+                  runIf = 'passed'
+                  source = 'dist/meta/version.json'
+                  stage = 'dist'
+                }
+                exec {
+                  commandLine = ['bash', '-c', 'bundle install --path .bundle --binstubs']
+                  runIf = 'passed'
+                }
+                exec {
+                  commandLine = ['bash', '-c', 'REPO_NAME=docs.go.cd bundle exec rake add_release_to_docs_pipeline']
+                  runIf = 'passed'
+                }
+              }
+            }
           }
         }
       }
