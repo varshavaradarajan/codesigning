@@ -27,6 +27,7 @@ GoCD.script {
           url = 'https://git.gocd.io/git/gocd/gocd-cloud'
           destination = 'gocd-cloud'
           autoUpdate = true
+          blacklist = ["**/*.*", "**/*"]
         }
         git('GocdChocolatey') {
           branch = 'master'
@@ -34,6 +35,7 @@ GoCD.script {
           url = 'https://git.gocd.io/git/gocd/gocd-chocolatey'
           destination = 'gocd-chocolatey'
           autoUpdate = true
+          blacklist = ["**/*.*", "**/*"]
         }
         git('CodeSigning') {
           branch = 'master'

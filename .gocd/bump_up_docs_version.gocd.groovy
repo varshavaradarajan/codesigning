@@ -16,6 +16,7 @@ GoCD.script {
           branch = 'master'
           shallowClone = false
           url = 'https://github.com/gocd/release-activity-scripts'
+          blacklist = ["**/*.*", "**/*"]
         }
         dependency('PromoteToStable') {
           pipeline = 'PublishStableRelease'
