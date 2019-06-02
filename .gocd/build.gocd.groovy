@@ -115,10 +115,6 @@ GoCD.script {
           pipeline = 'regression-SPAs'
           stage = 'Firefox'
         }
-        dependency('acceptance-linux') {
-          pipeline = 'acceptance-linux'
-          stage = 'RunAcceptanceSpecs-plugins'
-        }
       }
 
       stages {
