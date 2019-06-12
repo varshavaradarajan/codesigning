@@ -291,6 +291,61 @@ GoCD.script {
             }
           }
         }
+
+        stage('upload-to-maven-exp') {
+          cleanWorkingDir = true
+          approval {
+            type = 'manual'
+          }
+          environmentVariables = [
+            'AUTO_RELEASE_TO_CENTRAL': 'true',
+            'EXPERIMENTAL_RELEASE'   : 'true',
+            'MAVEN_NEXUS_USERNAME'   : 'arvindsv'
+          ]
+          secureEnvironmentVariables = [
+            'MAVEN_NEXUS_PASSWORD': 'AES:U0+58CAsIkycH+6DUL+Z6w==:EoTd+MQsXP8iL64+eDUi226NbEOGM3N6RfYxZeXH6C30X70xcKKuaEuFVLATe92Ht9RDNrMhXbv2lAt/iEoEbA=='
+          ]
+          jobs {
+            job('upload-maven') {
+              elasticProfileId = 'ecs-gocd-dev-build'
+              tasks {
+                fetchArtifact {
+                  file = true
+                  job = 'dist'
+                  pipeline = 'installers'
+                  runIf = 'passed'
+                  source = 'dist/meta/version.json'
+                  stage = 'dist'
+                  destination = "codesigning"
+                }
+                fetchArtifact {
+                  job = 'dist'
+                  pipeline = 'installers'
+                  runIf = 'passed'
+                  source = 'go-plugin-api'
+                  stage = 'dist'
+                  destination = "codesigning"
+                }
+                fetchArtifact {
+                  job = 'dist'
+                  pipeline = 'installers'
+                  runIf = 'passed'
+                  source = 'go-plugin-config-repo'
+                  stage = 'dist'
+                  destination = "codesigning"
+                }
+                bash {
+                  commandString = "bundle install --jobs 4 --path .bundle --clean"
+                  workingDir = 'codesigning'
+                }
+                bash {
+                  commandString = "bundle exec rake upload_to_maven"
+                  workingDir = 'codesigning'
+                }
+              }
+            }
+          }
+        }
       }
     }
 
