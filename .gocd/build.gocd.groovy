@@ -339,7 +339,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 bash {
-                  commandString = "bundle exec rake upload_to_maven"
+                  commandString = "bundle exec rake maven:upload_to_maven"
                   workingDir = 'codesigning'
                 }
               }

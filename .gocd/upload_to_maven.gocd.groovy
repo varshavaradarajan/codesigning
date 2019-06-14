@@ -8,9 +8,16 @@ GoCD.script {
       labelTemplate = '${COUNT}'
       lockBehavior = 'none'
       secureEnvironmentVariables = [
+        GOCD_GPG_PASSPHRASE  : 'AES:7lAutKoRKMuSnh3Sbg9DeQ==:8fhND9w/8AWw6dJhmWpTcCdKSsEcOzriQNiKFZD6XtN+sJvZ65NH/QFXRNiy192+SSTKsbhOrFmw+kAKt5+MH1Erd6H54zJjpSgvJUmsJaQ=',
         GIT_PASSWORD: 'AES:VamvCdi7OX38zp33L7SJbw==:lm7xodTUI06gb39yj/qhX6zmxlkFuCjUx0+HHV5kn+ynJ2PNqfOMu1LmQio0u+Tj'
       ]
       materials {
+        svn('signing-keys') {
+          url = "https://github.com/gocd-private/signing-keys/trunk"
+          username = "gocd-ci-user"
+          encryptedPassword = "AES:taOvOCaXsoVwzIi+xIGLdA==:GSfhZ6KKt6MXKp/wdYYoyBQKKzbTiyDa+35kDgkEIOF75s9lzerGInbqbUM7nUKc"
+          destination = "signing-keys"
+        }
         git('CodeSigning') {
           branch = 'master'
           shallowClone = false
@@ -74,7 +81,7 @@ GoCD.script {
                   workingDir = 'codesigning'
                 }
                 bash {
-                  commandString = "bundle exec rake upload_to_maven"
+                  commandString = "bundle exec rake maven:upload_to_maven"
                   workingDir = 'codesigning'
                 }
               }
