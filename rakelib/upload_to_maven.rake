@@ -34,6 +34,8 @@ namespace :maven do
     maven_release_version = is_experimental ? go_full_version : go_version
     artifact_suffix       = is_experimental ? "-experimental" : ""
 
+    auto_release_to_central = is_experimental ? 'false' : 'true'
+
     %w(go-plugin-api go-plugin-config-repo).each do |artifact_name|
       pom_content = File.read('./resources/deploy-pom.xml')
                         .gsub('${goReleaseVersion}', maven_release_version)
@@ -44,7 +46,7 @@ namespace :maven do
       File.open("#{artifact_name}/pom.xml", 'w') {|f| f.puts pom_content}
 
       cd "#{artifact_name}" do
-        sh("mvn --settings ../resources/settings.xml -DautoReleaseToCentral=#{ENV['AUTO_RELEASE_TO_CENTRAL'] || 'false'} --batch-mode -Dusername=${MAVEN_NEXUS_USERNAME} -Dpassword=${MAVEN_NEXUS_PASSWORD} deploy")
+        sh("mvn --settings ../resources/settings.xml -DautoReleaseToCentral=#{auto_release_to_central} --batch-mode -Dusername=${MAVEN_NEXUS_USERNAME} -Dpassword=${MAVEN_NEXUS_PASSWORD} deploy")
       end
 
     end
