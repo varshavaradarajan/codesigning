@@ -37,7 +37,7 @@ GoCD.script {
           cleanWorkingDir = true
           fetchMaterials = true
           approval {
-            type = 'success'
+            type = 'manual'
           }
           environmentVariables = [
             'AUTO_RELEASE_TO_CENTRAL': 'true',
