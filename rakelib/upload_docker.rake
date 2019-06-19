@@ -15,9 +15,9 @@ namespace :docker do
   end
 
   def get_docker_hub_name(image_name, type)
-    if type.to_s === "server"
+    if type.to_s === "server" && image_name.include?('docker-')
       return image_name.gsub! "docker-", ""
-    elsif type.to_s === "agent"
+    else
       return image_name
     end
     raise "Invalid type: #{type}"
