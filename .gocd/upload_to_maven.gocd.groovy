@@ -36,9 +36,6 @@ GoCD.script {
           artifactCleanupProhibited = false
           cleanWorkingDir = true
           fetchMaterials = true
-          approval {
-            type = 'manual'
-          }
           environmentVariables = [
             'AUTO_RELEASE_TO_CENTRAL': 'true',
             'EXPERIMENTAL_RELEASE'   : 'false',
